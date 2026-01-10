@@ -1,0 +1,1 @@
+self.__NEXT_FONT_MANIFEST="{\"pages\":{},\"app\":{\"/Users/jackyho/Documents/GitHub/Natalie_Me/app/layout\":[\"static/media/de42cfb9a3b980ae-s.p.woff2\",\"static/media/9cc5b37ab1350db7-s.p.woff2\",\"static/media/e6099e249fd938cc-s.p.woff2\",\"static/media/5b01f339abf2f1a5.p.woff2\"]},\"appUsingSizeAdjust\":true,\"pagesUsingSizeAdjust\":false}"
