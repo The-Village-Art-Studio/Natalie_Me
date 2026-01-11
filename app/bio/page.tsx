@@ -78,7 +78,7 @@ export default function BioPage() {
 
                         <div className="relative w-full aspect-[4/3] md:aspect-[21/9] rounded-3xl overflow-hidden mb-12 border border-white/10 group">
                             <Image
-                                src="/natalie_profile.png"
+                                src="/natalie_profile.jpg"
                                 alt="Natalie's Portrait in Studio"
                                 fill
                                 className="object-cover transition-transform duration-700 group-hover:scale-105"
