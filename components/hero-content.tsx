@@ -4,8 +4,8 @@ import Link from "next/link"
 
 export default function HeroContent() {
   return (
-    <main className="absolute inset-0 z-20 flex items-center justify-center pl-[10%] pr-[20%]">
-      <div className="max-w-lg">
+    <main className="absolute inset-0 z-20 flex items-center justify-center pl-[10%] pr-[20%] pointer-events-none">
+      <div className="max-w-lg pointer-events-auto">
         <div className="text-left">
           <div
             className="inline-flex items-center px-3 py-1 rounded-full bg-white/5 backdrop-blur-sm mb-4 relative"
