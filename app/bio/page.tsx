@@ -76,7 +76,7 @@ export default function BioPage() {
                             <span className="font-medium italic instrument">About</span> Natalie
                         </h1>
 
-                        <div className="relative w-full aspect-[4/3] md:aspect-[21/9] rounded-3xl overflow-hidden mb-12 border border-white/10 group">
+                        <div className="relative w-48 h-48 md:w-64 md:h-64 mx-auto rounded-full overflow-hidden mb-12 border-2 border-white/20 group shadow-xl shadow-black/20">
                             <Image
                                 src="/natalie_profile.jpg"
                                 alt="Natalie's Portrait in Studio"
