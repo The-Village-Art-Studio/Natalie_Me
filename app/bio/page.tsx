@@ -105,9 +105,9 @@ export default function BioPage() {
                     </div>
 
                     {/* Exhibitions Section */}
-                    <div className="mb-20">
-                        <h2 className="text-white/40 text-xs font-light tracking-[0.2em] uppercase mb-10 text-center">
-                            Exhibitions and Projects
+                    <div className="p-8 md:p-10 rounded-3xl bg-white/5 backdrop-blur-md border border-white/10 mb-20">
+                        <h2 className="text-white text-xl font-light tracking-[0.1em] uppercase mb-10 text-center">
+                            Exhibitions and Awards
                         </h2>
                         <div className="space-y-12">
                             {exhibitions.map((item, index) => (
@@ -120,7 +120,7 @@ export default function BioPage() {
                                         <h3 className="text-white text-lg font-light tracking-tight group-hover:text-white transition-colors uppercase">
                                             {item.title}
                                         </h3>
-                                        <div className="text-[#ff4d4d] text-sm font-light italic">
+                                        <div className="text-white/70 text-sm font-light italic">
                                             {item.venue}
                                         </div>
                                         <p className="text-white/60 text-sm font-light leading-relaxed max-w-2xl">
