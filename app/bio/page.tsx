@@ -70,7 +70,7 @@ export default function BioPage() {
                             style={{ filter: "url(#glass-effect)" }}
                         >
                             <div className="absolute top-0 left-1 right-1 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent rounded-full" />
-                            <span className="text-white/90 text-xs font-light relative z-10">🇨🇦 Toronto-based Artist</span>
+                            <span className="text-white/90 text-xs font-light relative z-10">🇨🇦 Toronto-based Artist with 🇺🇦 Ukrainian roots</span>
                         </div>
                         <h1 className="text-4xl md:text-5xl font-light text-white mb-8">
                             <span className="font-medium italic instrument">About</span> Natalie

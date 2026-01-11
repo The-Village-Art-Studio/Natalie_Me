@@ -693,9 +693,6 @@ font-weight: 100 900;
   .field-sizing-content {
     field-sizing: content;
   }
-  .aspect-\[4\/3\] {
-    aspect-ratio: 4/3;
-  }
   .aspect-square {
     aspect-ratio: 1 / 1;
   }
@@ -882,9 +879,6 @@ font-weight: 100 900;
   }
   .w-5 {
     width: calc(var(--spacing) * 5);
-  }
-  .w-6 {
-    width: calc(var(--spacing) * 6);
   }
   .w-8 {
     width: calc(var(--spacing) * 8);
@@ -2772,16 +2766,6 @@ font-weight: 100 900;
       }
     }
   }
-  .hover\:text-white\/80 {
-    &:hover {
-      @media (hover: hover) {
-        color: color-mix(in srgb, #fff 80%, transparent);
-        @supports (color: color-mix(in lab, red, red)) {
-          color: color-mix(in oklab, var(--color-white) 80%, transparent);
-        }
-      }
-    }
-  }
   .hover\:underline {
     &:hover {
       @media (hover: hover) {
@@ -4414,11 +4398,6 @@ font-weight: 100 900;
   .md\:flex {
     @media (width >= 48rem) {
       display: flex;
-    }
-  }
-  .md\:aspect-\[21\/9\] {
-    @media (width >= 48rem) {
-      aspect-ratio: 21/9;
     }
   }
   .md\:h-64 {
