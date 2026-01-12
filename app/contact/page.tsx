@@ -21,7 +21,7 @@ export default function ContactPage() {
                     </p>
 
                     {/* Contact Form */}
-                    <form className="w-full max-w-md p-8 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 space-y-5">
+                    <form className="w-full max-w-md mx-auto p-8 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 space-y-5">
                         {/* Name Field */}
                         <div className="space-y-2">
                             <label htmlFor="name" className="block text-white/80 text-xs font-light tracking-wide">
