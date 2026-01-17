@@ -7,17 +7,17 @@ import Link from "next/link"
 const events = [
   {
     id: 1,
-    title: "Summer Solstice Exhibition",
-    date: "June 21, 2026",
-    location: "Public Display Gallery, Toronto",
-    description: "An immersive showcase of Natalie's latest meditative paintings exploring the themes of light and nature.",
+    title: "THE GREAT OUTDOORS",
+    date: "January 15 - January 27 2026",
+    location: "NORTHERN CONTEMPORARY GALLERY",
+    description: "A NATURE THEMED ART SHOW.",
   },
   {
     id: 2,
-    title: "Autumn Reflections Workshop",
-    date: "October 15, 2026",
-    location: "Online / Zoom",
-    description: "Join Natalie for a virtual painting workshop focused on capturing the beauty of seasonal transitions.",
+    title: "MIAMI ART WEEK 2025",
+    date: "Decemebr 3 - 7 2025",
+    location: "Mana Wynwood Convention Center",
+    description: "Group Exhibition by ARTBOXY.",
   },
 ]
 
