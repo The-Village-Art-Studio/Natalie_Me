@@ -1,24 +1,37 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Figtree } from "next/font/google"
+import { Josefin_Sans } from "next/font/google"
+import localFont from "next/font/local"
 import { GeistMono } from "geist/font/mono"
-import { Instrument_Serif } from "next/font/google"
 import "./globals.css"
 import BackToTop from "@/components/back-to-top"
 
-const figtree = Figtree({
+const josefin = Josefin_Sans({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-figtree",
+  weight: ["100", "200", "300", "400", "500", "600", "700"],
+  variable: "--font-josefin-sans",
   display: "swap",
 })
 
-const instrumentSerif = Instrument_Serif({
-  subsets: ["latin"],
-  weight: ["400"],
-  style: ["normal", "italic"],
-  variable: "--font-instrument-serif",
-  display: "swap",
+const theSeasons = localFont({
+  src: [
+    {
+      path: "../public/the-seasons/Fontspring-DEMO-theseasons-lt.otf",
+      weight: "300",
+      style: "normal",
+    },
+    {
+      path: "../public/the-seasons/Fontspring-DEMO-theseasons-reg.otf",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../public/the-seasons/Fontspring-DEMO-theseasons-bd.otf",
+      weight: "700",
+      style: "normal",
+    },
+  ],
+  variable: "--font-the-seasons",
 })
 
 export const metadata: Metadata = {
@@ -37,14 +50,14 @@ export default function RootLayout({
       <head>
         <style>{`
 html {
-  font-family: ${figtree.style.fontFamily};
-  --font-sans: ${figtree.variable};
+  font-family: ${josefin.style.fontFamily};
+  --font-sans: ${josefin.variable};
   --font-mono: ${GeistMono.variable};
-  --font-instrument-serif: ${instrumentSerif.variable};
+  --font-the-seasons: ${theSeasons.variable};
 }
         `}</style>
       </head>
-      <body className={`${figtree.variable} ${instrumentSerif.variable}`}>
+      <body className={`${josefin.variable} ${theSeasons.variable}`}>
         {children}
         <BackToTop />
       </body>

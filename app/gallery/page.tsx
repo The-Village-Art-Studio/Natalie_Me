@@ -42,7 +42,7 @@ export default function GalleryPage() {
                     {/* Page Title */}
                     <div className="mb-12">
                         <h1 className="text-4xl md:text-5xl font-light text-white mb-4">
-                            <span className="font-medium italic instrument">Gallery</span>
+                            <span className="font-medium">Gallery</span>
                         </h1>
                         <p className="text-white/60 text-sm font-light max-w-md">
                             A collection of original paintings that capture the beauty in everyday moments.

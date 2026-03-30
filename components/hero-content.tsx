@@ -19,7 +19,7 @@ export default function HeroContent() {
 
           {/* Main Heading */}
           <h1 className="text-5xl md:text-6xl md:leading-16 tracking-tight font-light text-white mb-4">
-            <span className="font-medium italic instrument">Natalie_Me</span>
+            <span className="font-medium the-seasons">Natalie<span className="font-sans font-thin">_</span>Me</span>
             <br />
             <span className="font-light tracking-tight text-white">Visual Artist</span>
           </h1>

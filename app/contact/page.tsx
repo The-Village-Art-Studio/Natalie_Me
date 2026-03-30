@@ -12,7 +12,7 @@ export default function ContactPage() {
                 <div className="max-w-lg text-center">
                     {/* Page Title */}
                     <h1 className="text-4xl md:text-5xl font-light text-white mb-6">
-                        <span className="font-medium italic instrument">Get in Touch</span>
+                        <span className="font-medium">Get in Touch</span>
                     </h1>
 
                     {/* Bio */}

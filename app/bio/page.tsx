@@ -52,7 +52,7 @@ export default function BioPage() {
                             <span className="text-white/90 text-xs font-light relative z-10">🇨🇦 Toronto-based Artist with 🇺🇦 Ukrainian roots</span>
                         </div>
                         <h1 className="text-4xl md:text-5xl font-light text-white mb-8">
-                            <span className="font-medium italic instrument">About</span> Natalie
+                            <span className="font-medium">About</span> Natalie
                         </h1>
 
                         <div className="relative w-48 h-48 md:w-64 md:h-64 mx-auto rounded-full overflow-hidden mb-12 border-2 border-white/20 group shadow-xl shadow-black/20">
@@ -99,7 +99,7 @@ export default function BioPage() {
                                         <h3 className="text-white text-lg font-light tracking-tight group-hover:text-white transition-colors uppercase">
                                             {item.title}
                                         </h3>
-                                        <div className="text-white/70 text-sm font-light italic">
+                                        <div className="text-white/70 text-sm font-light">
                                             {item.venue}
                                         </div>
                                         <p className="text-white/60 text-sm font-light leading-relaxed max-w-2xl">

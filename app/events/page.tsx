@@ -30,7 +30,7 @@ export default function EventsPage() {
           {/* Page Title */}
           <div className="mb-12">
             <h1 className="text-4xl md:text-5xl font-light text-white mb-4">
-              <span className="font-medium italic instrument">Events</span> & Shows
+              <span className="font-medium">Events</span> & Shows
             </h1>
             <p className="text-white/60 text-sm font-light max-w-md">
               Stay updated on upcoming exhibitions, workshops, and artist talks.
@@ -72,7 +72,7 @@ export default function EventsPage() {
               ))
             ) : (
               <div className="p-12 text-center rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10">
-                <p className="text-white/40 text-sm font-light italic">No upcoming events scheduled at this time. Please check back later.</p>
+                <p className="text-white/40 text-sm font-light">No upcoming events scheduled at this time. Please check back later.</p>
               </div>
             )}
           </div>

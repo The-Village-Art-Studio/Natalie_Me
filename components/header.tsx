@@ -26,7 +26,7 @@ export default function Header() {
         {/* Logo / Name */}
         <div className="flex items-center">
           <Link href="/" className="text-white text-xl tracking-tight">
-            <span className="font-medium italic instrument">Natalie_Me</span>
+            <span className="font-medium the-seasons">Natalie<span className="font-sans font-thin">_</span>Me</span>
           </Link>
         </div>
 
