@@ -105,7 +105,7 @@ export default function Header() {
 
         {/* Menu Content */}
         <div
-          className={`absolute top-0 right-0 h-full w-full max-w-sm bg-gradient-to-br from-purple-900/90 via-black/95 to-black/95 backdrop-blur-xl border-l border-white/10 transition-transform duration-500 ease-out ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'
+          className={`absolute top-0 right-0 h-full w-full max-w-sm bg-white/5 backdrop-blur-xl border-l border-white/10 transition-transform duration-500 ease-out ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'
             }`}
         >
           {/* Close Button */}
