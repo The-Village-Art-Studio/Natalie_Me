@@ -30,7 +30,7 @@ export default async function Icon() {
           borderRadius: '16px',
         }}
       >
-        N_M
+        NM
       </div>
     ),
     {
