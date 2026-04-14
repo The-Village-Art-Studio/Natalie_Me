@@ -5,6 +5,7 @@ import localFont from "next/font/local"
 import { GeistMono } from "geist/font/mono"
 import "./globals.css"
 import BackToTop from "@/components/back-to-top"
+import AtmosphereBackground from "@/components/atmosphere-background"
 
 const josefin = Josefin_Sans({
   subsets: ["latin"],
@@ -57,7 +58,8 @@ html {
 }
         `}</style>
       </head>
-      <body className={`${josefin.variable} ${theSeasons.variable}`}>
+      <body className={`${josefin.variable} ${theSeasons.variable} bg-transparent`}>
+        <AtmosphereBackground />
         {children}
         <BackToTop />
       </body>

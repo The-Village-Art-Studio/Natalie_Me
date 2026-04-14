@@ -21,7 +21,7 @@ export default function HeroContent() {
           <h1 className="text-5xl md:text-6xl md:leading-16 tracking-tight font-light text-white mb-4">
             <span className="font-medium the-seasons">Natalie<span className="font-sans font-thin">_</span>Me</span>
             <br />
-            <span className="font-light tracking-tight text-white">Visual Artist</span>
+            <span className="text-3xl md:text-4xl font-light tracking-tight text-white/90 mt-2 block">Visual Artist</span>
           </h1>
 
           {/* Description */}
