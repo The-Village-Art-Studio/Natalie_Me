@@ -7,17 +7,6 @@ import Image from "next/image"
 import { useState, useEffect } from "react"
 import { supabase } from "@/lib/supabase"
 
-const DEFAULT_BIO = {
-    statement: "Hi! My name is Natalie, and I'm a painter with a Ukrainian background. For inquiries about commissions, collaborations, or to purchase artwork, feel free to reach out through the form below or Instagram.\n\nPainting is a meditative and relaxing process, a way to express my feelings and emotional state. I love noticing beauty in the world and drawing others' attention to it.",
-    photo_url: "/natalie_profile.jpg",
-    exhibitions: [
-        "THE GREAT OUTDOORS, Toronto, 2026",
-        "MIAMI ART WEEK, 2025",
-        "Art Toronto, 2024",
-        "Ukrainian Contemporary Art Show, NYC, 2023"
-    ]
-}
-
 export default function BioPage() {
     const [bio, setBio] = useState<any>(null)
     const [loading, setLoading] = useState(true)
@@ -25,25 +14,22 @@ export default function BioPage() {
     useEffect(() => {
         const fetchBio = async () => {
             try {
-                const { data, error } = await supabase
+                const { data } = await supabase
                     .from('bio')
                     .select('*')
                     .maybeSingle()
                 
-                if (data) {
-                    setBio(data)
-                } else {
-                    setBio(DEFAULT_BIO)
-                }
+                setBio(data ?? null)
             } catch (error) {
                 console.error("Error fetching bio:", error)
-                setBio(DEFAULT_BIO)
+                setBio(null)
             } finally {
                 setLoading(false)
             }
         }
         fetchBio()
     }, [])
+
     return (
         <ShaderBackground>
             <Header />
@@ -65,15 +51,19 @@ export default function BioPage() {
                         <div className="relative w-48 h-48 md:w-64 md:h-64 mx-auto rounded-full overflow-hidden mb-12 border-2 border-white/20 group shadow-xl shadow-black/20 bg-white/5">
                             {loading ? (
                                 <div className="absolute inset-0 animate-pulse bg-white/5" />
-                            ) : (
+                            ) : bio?.photo_url ? (
                                 <Image
-                                    src={bio?.photo_url || "/natalie_profile.jpg"}
+                                    src={bio.photo_url}
                                     alt="Natalie's Portrait in Studio"
                                     fill
                                     className="object-cover transition-transform duration-700 group-hover:scale-105"
                                     priority
                                     unoptimized
                                 />
+                            ) : (
+                                <div className="absolute inset-0 flex items-center justify-center text-white/20 text-sm font-light">
+                                    Photo coming soon
+                                </div>
                             )}
                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60" />
                         </div>
@@ -85,57 +75,35 @@ export default function BioPage() {
                             Array.from({ length: 4 }).map((_, i) => (
                                 <div key={i} className="h-4 bg-white/5 rounded w-full animate-pulse" />
                             ))
-                        ) : (
+                        ) : bio?.statement ? (
                             <div className="whitespace-pre-wrap">
-                                {bio?.statement || "Bio content coming soon..."}
+                                {bio.statement}
                             </div>
+                        ) : (
+                            <p className="text-white/40 italic text-center">Artist statement coming soon.</p>
                         )}
                     </div>
 
                     {/* Exhibitions Section */}
-                    <div className="p-8 md:p-10 rounded-3xl bg-white/5 backdrop-blur-md border border-white/10 mb-20">
-                        <h2 className="text-white text-xl font-light tracking-[0.1em] uppercase mb-10 text-center">
-                            Exhibitions and Awards
-                        </h2>
-                        <div className="space-y-12">
-                            {loading ? (
-                                <div className="space-y-12">
-                                    <div className="h-20 bg-white/5 rounded-2xl animate-pulse" />
-                                    <div className="h-20 bg-white/5 rounded-2xl animate-pulse" />
-                                </div>
-                            ) : bio?.exhibitions?.length > 0 ? (
-                                bio.exhibitions.map((item: string | any, index: number) => (
-                                    <div key={index} className="flex flex-col md:flex-row gap-4 md:gap-12 group">
-                                        <div className="flex-1">
-                                            {typeof item === 'string' ? (
-                                                <p className="text-white font-light text-base">{item}</p>
-                                            ) : (
-                                                <div className="flex flex-col md:flex-row gap-4 md:gap-12">
-                                                    <div className="md:w-32 flex-shrink-0">
-                                                        <div className="text-white/80 text-sm font-medium mb-1">{item.date}</div>
-                                                        <div className="text-white/40 text-[10px] tracking-wider uppercase">{item.location}</div>
-                                                    </div>
-                                                    <div className="flex-1 space-y-2">
-                                                        <h3 className="text-white text-lg font-light tracking-tight group-hover:text-white transition-colors uppercase">
-                                                            {item.title}
-                                                        </h3>
-                                                        <div className="text-white/70 text-sm font-light">
-                                                            {item.venue}
-                                                        </div>
-                                                        <p className="text-white/60 text-sm font-light leading-relaxed max-w-2xl">
-                                                            {item.description}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
+                    {(!loading && (bio?.exhibitions?.length > 0 || bio?.awards?.length > 0)) && (
+                        <div className="p-8 md:p-10 rounded-3xl bg-white/5 backdrop-blur-md border border-white/10 mb-20">
+                            <h2 className="text-white text-xl font-light tracking-[0.1em] uppercase mb-10 text-center">
+                                Exhibitions and Awards
+                            </h2>
+                            <div className="space-y-6">
+                                {bio?.exhibitions?.map((item: string, index: number) => (
+                                    <div key={index} className="flex flex-col group">
+                                        <p className="text-white font-light text-base">{item}</p>
                                     </div>
-                                ))
-                            ) : (
-                                <p className="text-white/20 text-center text-sm font-light italic">No exhibitions listed yet.</p>
-                            )}
+                                ))}
+                                {bio?.awards?.map((item: string, index: number) => (
+                                    <div key={`award-${index}`} className="flex flex-col group">
+                                        <p className="text-white/70 font-light text-sm">🏆 {item}</p>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
-                    </div>
+                    )}
 
                     {/* Back to Home */}
                     <div className="mt-20 flex justify-center border-t border-white/10 pt-12">

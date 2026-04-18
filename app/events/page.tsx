@@ -6,26 +6,15 @@ import Link from "next/link"
 import { useState, useEffect } from "react"
 import { supabase } from "@/lib/supabase"
 
-const DEFAULT_EVENTS: Event[] = [
-    {
-        id: "1",
-        title: "THE GREAT OUTDOORS",
-        date_string: "January 15 - January 27 2026",
-        location: "NORTHERN CONTEMPORARY GALLERY",
-        description: "A NATURE THEMED ART SHOW.",
-        link: "https://www.northerncontemporary.com",
-        date_actual: "2026-01-15"
-    },
-    {
-        id: "2",
-        title: "MIAMI ART WEEK 2025",
-        date_string: "December 3 - 7 2025",
-        location: "Mana Wynwood Convention Center",
-        description: "Group Exhibition by ARTBOXY.",
-        link: "https://www.miamiartweek.com",
-        date_actual: "2025-12-03"
-    }
-]
+interface Event {
+    id: string
+    title: string
+    date_string: string
+    location: string
+    description: string
+    link?: string
+    date_actual?: string
+}
 
 export default function EventsPage() {
     const [events, setEvents] = useState<Event[]>([])
@@ -34,25 +23,22 @@ export default function EventsPage() {
     useEffect(() => {
         const fetchEvents = async () => {
             try {
-                const { data, error } = await supabase
+                const { data } = await supabase
                     .from('events')
                     .select('*')
-                    .order('date_actual', { ascending: false })
+                    .order('date', { ascending: false })
                 
-                if (data && data.length > 0) {
-                    setEvents(data)
-                } else {
-                    setEvents(DEFAULT_EVENTS)
-                }
+                setEvents(data ?? [])
             } catch (error) {
                 console.error("Error fetching events:", error)
-                setEvents(DEFAULT_EVENTS)
+                setEvents([])
             } finally {
                 setLoading(false)
             }
         }
         fetchEvents()
     }, [])
+
   return (
     <ShaderBackground>
       <Header />
@@ -61,7 +47,7 @@ export default function EventsPage() {
           {/* Page Title */}
           <div className="mb-12">
             <h1 className="text-4xl md:text-5xl font-light text-white mb-4">
-              <span className="font-medium">Events</span> & Shows
+              <span className="font-medium">Events</span> &amp; Shows
             </h1>
             <p className="text-white/60 text-sm font-light max-w-md">
               Stay updated on upcoming exhibitions, workshops, and artist talks.

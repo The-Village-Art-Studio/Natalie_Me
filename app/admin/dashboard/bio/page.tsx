@@ -8,7 +8,8 @@ import {
     Upload,
     Plus,
     Trash2,
-    Save
+    Save,
+    Image as ImageIcon
 } from "lucide-react"
 import Image from "next/image"
 import { toast } from "sonner"
