@@ -1,3 +1,5 @@
+"use client"
+
 import Header from "@/components/header"
 import ShaderBackground from "@/components/shader-background"
 import Link from "next/link"

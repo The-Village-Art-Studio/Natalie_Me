@@ -1,0 +1,17 @@
+{
+  "/_not-found/page": "/_not-found",
+  "/api/cron/keep-alive/route": "/api/cron/keep-alive",
+  "/api/contact/route": "/api/contact",
+  "/icon/route": "/icon",
+  "/admin/login/page": "/admin/login",
+  "/bio/page": "/bio",
+  "/contact/page": "/contact",
+  "/events/page": "/events",
+  "/page": "/",
+  "/gallery/page": "/gallery",
+  "/admin/dashboard/gallery/page": "/admin/dashboard/gallery",
+  "/admin/dashboard/events/page": "/admin/dashboard/events",
+  "/admin/dashboard/messages/page": "/admin/dashboard/messages",
+  "/admin/dashboard/page": "/admin/dashboard",
+  "/admin/dashboard/bio/page": "/admin/dashboard/bio"
+}
