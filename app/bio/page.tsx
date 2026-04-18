@@ -90,17 +90,33 @@ export default function BioPage() {
                             <h2 className="text-white text-xl font-light tracking-[0.1em] uppercase mb-10 text-center">
                                 Exhibitions and Awards
                             </h2>
-                            <div className="space-y-6">
-                                {bio?.exhibitions?.map((item: string, index: number) => (
-                                    <div key={index} className="flex flex-col group">
-                                        <p className="text-white font-light text-base">{item}</p>
-                                    </div>
-                                ))}
-                                {bio?.awards?.map((item: string, index: number) => (
-                                    <div key={`award-${index}`} className="flex flex-col group">
-                                        <p className="text-white/70 font-light text-sm">🏆 {item}</p>
-                                    </div>
-                                ))}
+                            <div className="space-y-4">
+                                {bio?.exhibitions?.map((item: any, index: number) => {
+                                    const title = typeof item === 'string' ? item : item.title
+                                    const year = typeof item === 'object' ? item.year : ''
+                                    const location = typeof item === 'object' ? item.location : ''
+                                    return (
+                                        <div key={index} className="flex items-baseline justify-between gap-4 pb-4 border-b border-white/5">
+                                            <span className="text-white font-light text-sm">{title}</span>
+                                            <span className="text-white/40 text-xs font-light whitespace-nowrap">
+                                                {[year, location].filter(Boolean).join(' · ')}
+                                            </span>
+                                        </div>
+                                    )
+                                })}
+                                {bio?.awards?.map((item: any, index: number) => {
+                                    const title = typeof item === 'string' ? item : item.title
+                                    const year = typeof item === 'object' ? item.year : ''
+                                    const location = typeof item === 'object' ? item.location : ''
+                                    return (
+                                        <div key={`award-${index}`} className="flex items-baseline justify-between gap-4 pb-4 border-b border-white/5">
+                                            <span className="text-white/70 font-light text-sm">🏆 {title}</span>
+                                            <span className="text-white/40 text-xs font-light whitespace-nowrap">
+                                                {[year, location].filter(Boolean).join(' · ')}
+                                            </span>
+                                        </div>
+                                    )
+                                })}
                             </div>
                         </div>
                     )}

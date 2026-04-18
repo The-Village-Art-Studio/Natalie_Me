@@ -2,16 +2,17 @@
   "/_not-found/page": "/_not-found",
   "/api/contact/route": "/api/contact",
   "/api/cron/keep-alive/route": "/api/cron/keep-alive",
+  "/api/upload/route": "/api/upload",
   "/icon/route": "/icon",
   "/admin/login/page": "/admin/login",
   "/bio/page": "/bio",
-  "/gallery/page": "/gallery",
-  "/contact/page": "/contact",
-  "/page": "/",
   "/events/page": "/events",
-  "/admin/dashboard/gallery/page": "/admin/dashboard/gallery",
+  "/contact/page": "/contact",
+  "/gallery/page": "/gallery",
+  "/page": "/",
   "/admin/dashboard/bio/page": "/admin/dashboard/bio",
-  "/admin/dashboard/messages/page": "/admin/dashboard/messages",
+  "/admin/dashboard/gallery/page": "/admin/dashboard/gallery",
+  "/admin/dashboard/events/page": "/admin/dashboard/events",
   "/admin/dashboard/page": "/admin/dashboard",
-  "/admin/dashboard/events/page": "/admin/dashboard/events"
+  "/admin/dashboard/messages/page": "/admin/dashboard/messages"
 }

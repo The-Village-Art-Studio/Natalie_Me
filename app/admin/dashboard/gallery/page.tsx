@@ -75,25 +75,25 @@ export default function GalleryManager() {
 
         setUploading(true)
         const fileExt = file.name.split('.').pop()
-        const fileName = `${Math.random()}.${fileExt}`
-        const filePath = `gallery/${fileName}`
+        const fileName = `${Date.now()}.${fileExt}`
 
-        const { error: uploadError, data } = await supabase.storage
-            .from('gallery')
-            .upload(filePath, file)
+        const uploadForm = new FormData()
+        uploadForm.append('file', file)
+        uploadForm.append('bucket', 'gallery')
+        uploadForm.append('path', fileName)
 
-        if (uploadError) {
-            toast.error("Failed to upload image")
-            console.error(uploadError)
-        } else {
-            const { data: { publicUrl } } = supabase.storage
-                .from('gallery')
-                .getPublicUrl(filePath)
-            
-            setFormData({ ...formData, image_url: publicUrl })
+        try {
+            const res = await fetch('/api/upload', { method: 'POST', body: uploadForm })
+            const json = await res.json()
+            if (!res.ok) throw new Error(json.error)
+            setFormData(prev => ({ ...prev, image_url: json.publicUrl }))
             toast.success("Image uploaded successfully")
+        } catch (err: any) {
+            toast.error("Upload failed: " + err.message)
+            console.error(err)
+        } finally {
+            setUploading(false)
         }
-        setUploading(false)
     }
 
     const handleSubmit = async (e: React.FormEvent) => {

@@ -26,7 +26,7 @@ export default function EventsPage() {
                 const { data } = await supabase
                     .from('events')
                     .select('*')
-                    .order('date', { ascending: false })
+                    .order('date_actual', { ascending: false })
                 
                 setEvents(data ?? [])
             } catch (error) {
