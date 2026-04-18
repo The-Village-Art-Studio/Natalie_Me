@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import sharp from 'sharp'
 
 // Use service role key to bypass RLS for storage uploads
 const supabaseAdmin = createClient(
@@ -12,7 +13,7 @@ export async function POST(request: NextRequest) {
         const formData = await request.formData()
         const file = formData.get('file') as File
         const bucket = formData.get('bucket') as string
-        const path = formData.get('path') as string
+        let path = formData.get('path') as string
 
         if (!file || !bucket || !path) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
@@ -21,10 +22,20 @@ export async function POST(request: NextRequest) {
         const bytes = await file.arrayBuffer()
         const buffer = Buffer.from(bytes)
 
+        // Convert to WebP
+        const webpBuffer = await sharp(buffer)
+            .webp({ quality: 80 })
+            .toBuffer()
+
+        // Ensure path has .webp extension
+        const pathParts = path.split('.')
+        pathParts[pathParts.length - 1] = 'webp'
+        path = pathParts.join('.')
+
         const { error: uploadError } = await supabaseAdmin.storage
             .from(bucket)
-            .upload(path, buffer, {
-                contentType: file.type,
+            .upload(path, webpBuffer, {
+                contentType: 'image/webp',
                 upsert: true
             })
 
