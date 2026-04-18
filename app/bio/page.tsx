@@ -7,19 +7,40 @@ import Image from "next/image"
 import { useState, useEffect } from "react"
 import { supabase } from "@/lib/supabase"
 
+const DEFAULT_BIO = {
+    statement: "Hi! My name is Natalie, and I'm a painter with a Ukrainian background. For inquiries about commissions, collaborations, or to purchase artwork, feel free to reach out through the form below or Instagram.\n\nPainting is a meditative and relaxing process, a way to express my feelings and emotional state. I love noticing beauty in the world and drawing others' attention to it.",
+    photo_url: "/natalie_profile.jpg",
+    exhibitions: [
+        "THE GREAT OUTDOORS, Toronto, 2026",
+        "MIAMI ART WEEK, 2025",
+        "Art Toronto, 2024",
+        "Ukrainian Contemporary Art Show, NYC, 2023"
+    ]
+}
+
 export default function BioPage() {
     const [bio, setBio] = useState<any>(null)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         const fetchBio = async () => {
-            const { data } = await supabase
-                .from('bio')
-                .select('*')
-                .single()
-            
-            if (data) setBio(data)
-            setLoading(false)
+            try {
+                const { data, error } = await supabase
+                    .from('bio')
+                    .select('*')
+                    .maybeSingle()
+                
+                if (data) {
+                    setBio(data)
+                } else {
+                    setBio(DEFAULT_BIO)
+                }
+            } catch (error) {
+                console.error("Error fetching bio:", error)
+                setBio(DEFAULT_BIO)
+            } finally {
+                setLoading(false)
+            }
         }
         fetchBio()
     }, [])

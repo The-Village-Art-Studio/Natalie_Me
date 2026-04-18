@@ -5,17 +5,53 @@ import ShaderBackground from "@/components/shader-background"
 import Image from "next/image"
 import Link from "next/link"
 
-export interface Artwork {
-    id: string
-    src: string
-    alt: string
-    title: string
-    year: string
-    medium: string
-    description: string
-    image_url?: string // From Supabase
-}
-// Removed hardcoded artworks array
+const DEFAULT_ARTWORKS: Artwork[] = [
+    {
+        id: "1",
+        src: "/gallery/mossy_depths.jpg",
+        alt: "Mossy Depths - Mixed Media Painting",
+        title: "Mossy Depths",
+        year: "2025",
+        medium: "Mixed Media on Canvas",
+        description: "A deep exploration of organic textures and muted greens, inspired by the forest floor."
+    },
+    {
+        id: "2",
+        src: "/gallery/pink_bloom.jpg",
+        alt: "Pink Bloom - Acrylic Painting",
+        title: "Pink Bloom",
+        year: "2025",
+        medium: "Acrylic on Canvas",
+        description: "An expressive floral piece capturing the vibrant energy of a spring blossom in full light."
+    },
+    {
+        id: "3",
+        src: "/gallery/celestial_drift.jpg",
+        alt: "Celestial Drift - Oil and Acrylic Painting",
+        title: "Celestial Drift",
+        year: "2024",
+        medium: "Oil and Acrylic on Canvas",
+        description: "A cosmic journey through ethereal light and color, blending classical oil techniques with modern acrylics."
+    },
+    {
+        id: "4",
+        src: "/gallery/frosted_berries.jpg",
+        alt: "Frosted Berries - Textured Acrylic Painting",
+        title: "Frosted Berries",
+        year: "2025",
+        medium: "Textured Acrylic",
+        description: "A tactile representation of winter's first frost on wild berries, using heavy-body acrylics for depth."
+    },
+    {
+        id: "5",
+        src: "/gallery/alpine_quiet.jpg",
+        alt: "Alpine Quiet - Oil Painting",
+        title: "Alpine Quiet",
+        year: "2025",
+        medium: "Oil on Canvas",
+        description: "The stillness of the mountains reflected in a calm, monochromatic palette of blues and grays."
+    }
+]
 
 import GalleryModal from "@/components/gallery-modal"
 import { useState, useEffect } from "react"
@@ -29,13 +65,23 @@ export default function GalleryPage() {
 
     useEffect(() => {
         const fetchArtworks = async () => {
-            const { data } = await supabase
-                .from('artworks')
-                .select('*')
-                .order('order', { ascending: true })
-            
-            if (data) setArtworks(data)
-            setLoading(false)
+            try {
+                const { data, error } = await supabase
+                    .from('artworks')
+                    .select('*')
+                    .order('order', { ascending: true })
+                
+                if (data && data.length > 0) {
+                    setArtworks(data)
+                } else {
+                    setArtworks(DEFAULT_ARTWORKS)
+                }
+            } catch (error) {
+                console.error("Error fetching artworks:", error)
+                setArtworks(DEFAULT_ARTWORKS)
+            } finally {
+                setLoading(false)
+            }
         }
         fetchArtworks()
     }, [])
