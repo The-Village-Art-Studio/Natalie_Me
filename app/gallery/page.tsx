@@ -5,35 +5,41 @@ import ShaderBackground from "@/components/shader-background"
 import Image from "next/image"
 import Link from "next/link"
 
-const artworks = [
-    {
-        id: 1,
-        src: "https://cdn.prod.website-files.com/67ab77b0c518eeb5b3f7bb80/686ea1c42da4640cc8844d4f_20250518_222807-1-.webp",
-        alt: "Artwork by Natalie",
-    },
-    {
-        id: 2,
-        src: "https://cdn.prod.website-files.com/67ab77b0c518eeb5b3f7bb80/686ea1c5b15fadce8728c538_20250607_165959.webp",
-        alt: "Artwork by Natalie",
-    },
-    {
-        id: 3,
-        src: "https://cdn.prod.website-files.com/67ab77b0c518eeb5b3f7bb80/686ea1c98c8b7f686f86f104_20240819_213706.webp",
-        alt: "Artwork by Natalie",
-    },
-    {
-        id: 4,
-        src: "https://cdn.prod.website-files.com/67ab77b0c518eeb5b3f7bb80/686ea1cc945d429204faa4b9_20250426_141642.webp",
-        alt: "Artwork by Natalie",
-    },
-    {
-        id: 5,
-        src: "https://cdn.prod.website-files.com/67ab77b0c518eeb5b3f7bb80/686ea1cf4c11b0f0cd7b1704_20250615_195502.webp",
-        alt: "Artwork by Natalie",
-    },
-]
+export interface Artwork {
+    id: string
+    src: string
+    alt: string
+    title: string
+    year: string
+    medium: string
+    description: string
+    image_url?: string // From Supabase
+}
+// Removed hardcoded artworks array
+
+import GalleryModal from "@/components/gallery-modal"
+import { useState, useEffect } from "react"
+import { supabase } from "@/lib/supabase"
 
 export default function GalleryPage() {
+    const [artworks, setArtworks] = useState<Artwork[]>([])
+    const [selectedArtworkIndex, setSelectedArtworkIndex] = useState<number | null>(null)
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        const fetchArtworks = async () => {
+            const { data } = await supabase
+                .from('artworks')
+                .select('*')
+                .order('order', { ascending: true })
+            
+            if (data) setArtworks(data)
+            setLoading(false)
+        }
+        fetchArtworks()
+    }, [])
+
     return (
         <ShaderBackground>
             <Header />
@@ -51,22 +57,39 @@ export default function GalleryPage() {
 
                     {/* Artwork Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {artworks.map((artwork) => (
-                            <div
-                                key={artwork.id}
-                                className="group relative aspect-square overflow-hidden rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 transition-all duration-300 hover:border-white/30 hover:scale-[1.02]"
-                            >
-                                <Image
-                                    src={artwork.src}
-                                    alt={artwork.alt}
-                                    fill
-                                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                    unoptimized
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        {loading ? (
+                            Array.from({ length: 6 }).map((_, i) => (
+                                <div key={i} className="aspect-square rounded-2xl bg-white/5 animate-pulse" />
+                            ))
+                        ) : artworks.length > 0 ? (
+                            artworks.map((artwork, index) => (
+                                <div
+                                    key={artwork.id}
+                                    onClick={() => {
+                                        setSelectedArtworkIndex(index)
+                                        setIsModalOpen(true)
+                                    }}
+                                    className="group relative aspect-square overflow-hidden rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 transition-all duration-300 hover:border-white/30 hover:scale-[1.02] cursor-pointer"
+                                >
+                                    <Image
+                                        src={artwork.image_url || artwork.src}
+                                        alt={artwork.alt || artwork.title}
+                                        fill
+                                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                        unoptimized
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
+                                        <h3 className="text-white font-medium text-lg translate-y-2 group-hover:translate-y-0 transition-transform duration-300">{artwork.title}</h3>
+                                        <p className="text-white/60 text-xs font-light translate-y-2 group-hover:translate-y-0 transition-transform duration-300 delay-75">{artwork.medium}, {artwork.year}</p>
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="col-span-full py-20 text-center">
+                                <p className="text-white/40 text-sm font-light">No artworks found in the gallery.</p>
                             </div>
-                        ))}
+                        )}
                     </div>
 
                     {/* Back to Home */}
@@ -83,6 +106,14 @@ export default function GalleryPage() {
                     </div>
                 </div>
             </main>
+
+            <GalleryModal
+                isOpen={isModalOpen}
+                setIsOpen={setIsModalOpen}
+                artworks={artworks}
+                currentIndex={selectedArtworkIndex}
+                setCurrentIndex={setSelectedArtworkIndex}
+            />
         </ShaderBackground>
     )
 }

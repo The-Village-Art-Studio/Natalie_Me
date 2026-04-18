@@ -3,25 +3,35 @@
 import Header from "@/components/header"
 import ShaderBackground from "@/components/shader-background"
 import Link from "next/link"
+import { useState, useEffect } from "react"
+import { supabase } from "@/lib/supabase"
 
-const events = [
-  {
-    id: 1,
-    title: "THE GREAT OUTDOORS",
-    date: "January 15 - January 27 2026",
-    location: "NORTHERN CONTEMPORARY GALLERY",
-    description: "A NATURE THEMED ART SHOW.",
-  },
-  {
-    id: 2,
-    title: "MIAMI ART WEEK 2025",
-    date: "Decemebr 3 - 7 2025",
-    location: "Mana Wynwood Convention Center",
-    description: "Group Exhibition by ARTBOXY.",
-  },
-]
+interface Event {
+    id: string
+    title: string
+    date_string: string
+    location: string
+    description: string
+    link?: string
+    date_actual?: string
+}
 
 export default function EventsPage() {
+    const [events, setEvents] = useState<Event[]>([])
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        const fetchEvents = async () => {
+            const { data } = await supabase
+                .from('events')
+                .select('*')
+                .order('date_actual', { ascending: false })
+            
+            if (data) setEvents(data)
+            setLoading(false)
+        }
+        fetchEvents()
+    }, [])
   return (
     <ShaderBackground>
       <Header />
@@ -39,7 +49,11 @@ export default function EventsPage() {
 
           {/* Events List */}
           <div className="space-y-6">
-            {events.length > 0 ? (
+            {loading ? (
+              Array.from({ length: 2 }).map((_, i) => (
+                <div key={i} className="p-8 rounded-2xl bg-white/5 animate-pulse h-48" />
+              ))
+            ) : events.length > 0 ? (
               events.map((event) => (
                 <div
                   key={event.id}
@@ -48,7 +62,7 @@ export default function EventsPage() {
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
                     <div>
                       <span className="text-white/40 text-xs font-light tracking-widest uppercase mb-1 block">
-                        {event.date}
+                        {event.date_string}
                       </span>
                       <h2 className="text-2xl font-light text-white group-hover:text-white transition-colors">
                         {event.title}
@@ -65,9 +79,16 @@ export default function EventsPage() {
                   <p className="text-white/60 text-sm font-light leading-relaxed max-w-2xl mb-6">
                     {event.description}
                   </p>
-                  <button className="px-6 py-2 rounded-full border border-white/20 text-white text-xs font-light hover:bg-white/10 transition-all">
-                    Learn More
-                  </button>
+                  {event.link && (
+                    <a 
+                      href={event.link} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="inline-block px-6 py-2 rounded-full border border-white/20 text-white text-xs font-light hover:bg-white/10 transition-all"
+                    >
+                      Learn More
+                    </a>
+                  )}
                 </div>
               ))
             ) : (
