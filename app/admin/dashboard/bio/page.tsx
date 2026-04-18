@@ -34,7 +34,7 @@ export default function BioEditor() {
         const { data, error } = await supabase
             .from('bio')
             .select('*')
-            .single()
+            .maybeSingle()
         
         if (data) {
             setFormData({
@@ -77,7 +77,7 @@ export default function BioEditor() {
 
     const handleSave = async () => {
         setSaving(true)
-        const { data: existing } = await supabase.from('bio').select('id').single()
+        const { data: existing } = await supabase.from('bio').select('id').maybeSingle()
 
         let error
         if (existing) {

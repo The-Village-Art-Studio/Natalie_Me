@@ -1,1 +1,1 @@
-self.__NEXT_FONT_MANIFEST='{"pages":{},"app":{"/Users/nfscars001/Documents/GitHub/Natalie_Me/app/layout":["static/media/accc82dc8525882b-s.p.woff2","static/media/5b01f339abf2f1a5.p.woff2","static/media/6177f7099c2c5609-s.p.otf","static/media/e94071e0acfa8503-s.p.otf","static/media/0cad7531ae2ee042-s.p.otf"]},"appUsingSizeAdjust":true,"pagesUsingSizeAdjust":false}';
+self.__NEXT_FONT_MANIFEST="{\"pages\":{},\"app\":{},\"appUsingSizeAdjust\":false,\"pagesUsingSizeAdjust\":false}"

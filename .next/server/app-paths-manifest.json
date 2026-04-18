@@ -1,17 +1,6 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
-  "/api/cron/keep-alive/route": "app/api/cron/keep-alive/route.js",
-  "/api/contact/route": "app/api/contact/route.js",
-  "/icon/route": "app/icon/route.js",
-  "/admin/login/page": "app/admin/login/page.js",
   "/bio/page": "app/bio/page.js",
-  "/contact/page": "app/contact/page.js",
   "/events/page": "app/events/page.js",
   "/page": "app/page.js",
-  "/gallery/page": "app/gallery/page.js",
-  "/admin/dashboard/gallery/page": "app/admin/dashboard/gallery/page.js",
-  "/admin/dashboard/events/page": "app/admin/dashboard/events/page.js",
-  "/admin/dashboard/messages/page": "app/admin/dashboard/messages/page.js",
-  "/admin/dashboard/page": "app/admin/dashboard/page.js",
-  "/admin/dashboard/bio/page": "app/admin/dashboard/bio/page.js"
+  "/gallery/page": "app/gallery/page.js"
 }

@@ -15,6 +15,7 @@ import {
     X
 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import AtmosphereBackground from "@/components/atmosphere-background"
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     const [loading, setLoading] = useState(true)
@@ -58,7 +59,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     ]
 
     return (
-        <div className="min-h-screen bg-[#0a0a0a] text-white flex">
+        <div className="min-h-screen text-white flex relative">
+            <AtmosphereBackground />
+            
             {/* Sidebar */}
             <aside className={cn(
                 "fixed inset-y-0 left-0 z-50 w-64 bg-black/50 backdrop-blur-xl border-r border-white/10 transition-transform duration-300 lg:static lg:translate-x-0",
@@ -67,7 +70,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <div className="flex flex-col h-full p-6">
                     <div className="mb-10 px-2">
                         <Link href="/" className="text-xl font-light">
-                            Natalie<span className="font-medium the-seasons">_</span>Me Admin
+                            <span className="font-medium the-seasons">Natalie<span className="font-sans font-thin">_</span>Me Admin</span>
                         </Link>
                     </div>
 
@@ -110,7 +113,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
                 {/* Mobile Header */}
                 <header className="lg:hidden flex items-center justify-between p-4 border-b border-white/10 bg-black/50 backdrop-blur-md">
-                    <span className="text-lg font-light">Natalie<span className="font-medium the-seasons">_</span>Me</span>
+                    <span className="text-lg font-light">
+                        <span className="font-medium the-seasons">Natalie<span className="font-sans font-thin">_</span>Me</span>
+                    </span>
                     <button 
                         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                         className="p-2 rounded-lg bg-white/5 border border-white/10"
