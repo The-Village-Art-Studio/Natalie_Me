@@ -4,15 +4,15 @@
   "/api/cron/keep-alive/route": "/api/cron/keep-alive",
   "/api/upload/route": "/api/upload",
   "/icon/route": "/icon",
-  "/admin/login/page": "/admin/login",
-  "/bio/page": "/bio",
   "/events/page": "/events",
-  "/contact/page": "/contact",
   "/gallery/page": "/gallery",
+  "/bio/page": "/bio",
+  "/contact/page": "/contact",
+  "/admin/login/page": "/admin/login",
   "/page": "/",
   "/admin/dashboard/bio/page": "/admin/dashboard/bio",
-  "/admin/dashboard/gallery/page": "/admin/dashboard/gallery",
+  "/admin/dashboard/messages/page": "/admin/dashboard/messages",
   "/admin/dashboard/events/page": "/admin/dashboard/events",
   "/admin/dashboard/page": "/admin/dashboard",
-  "/admin/dashboard/messages/page": "/admin/dashboard/messages"
+  "/admin/dashboard/gallery/page": "/admin/dashboard/gallery"
 }

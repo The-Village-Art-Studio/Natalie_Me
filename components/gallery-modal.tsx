@@ -97,8 +97,8 @@ export default function GalleryModal({
                                     className="relative w-full h-full"
                                 >
                                     <Image
-                                        src={artwork.src}
-                                        alt={artwork.alt}
+                                        src={artwork.image_url || artwork.src || ''}
+                                        alt={artwork.alt || artwork.title}
                                         fill
                                         className="object-contain p-4 md:p-8"
                                         priority
