@@ -56,18 +56,19 @@ export default function GalleryModal({
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogContent
-                className="max-w-6xl w-[95vw] sm:max-w-none h-fit max-h-[95vh] p-0 border-none bg-transparent shadow-none flex flex-col items-center justify-center overflow-hidden"
+                className="max-w-6xl w-[95vw] sm:max-w-none h-fit max-h-[95vh] p-0 border-none bg-transparent shadow-none flex flex-col items-center justify-center overflow-y-auto overflow-x-hidden"
                 showCloseButton={false}
             >
-                <div className="relative flex flex-col items-center group w-full">
-                    {/* Close Button */}
-                    <button
-                        onClick={() => setIsOpen(false)}
-                        className="absolute top-4 right-4 z-50 p-2 rounded-full bg-black/20 backdrop-blur-md border border-white/10 text-white/70 hover:text-white hover:bg-black/40 transition-all duration-300"
-                    >
-                        <X className="w-5 h-5" />
-                    </button>
+                {/* Close Button — fixed within the dialog viewport so it's always visible on mobile */}
+                <button
+                    onClick={() => setIsOpen(false)}
+                    className="fixed top-3 right-3 md:absolute md:top-4 md:right-4 z-[60] p-2.5 rounded-full bg-black/50 backdrop-blur-md border border-white/20 text-white/90 hover:text-white hover:bg-black/60 transition-all duration-300 shadow-lg"
+                    aria-label="Close gallery"
+                >
+                    <X className="w-5 h-5" />
+                </button>
 
+                <div className="relative flex flex-col items-center group w-full">
                     {/* Navigation Buttons */}
                     <button
                         onClick={handlePrevious}
