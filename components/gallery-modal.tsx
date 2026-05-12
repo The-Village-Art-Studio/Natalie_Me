@@ -56,20 +56,20 @@ export default function GalleryModal({
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogContent
-                className="max-w-6xl w-[95vw] md:w-[95vw] sm:max-w-none h-[100dvh] md:h-fit md:max-h-[95vh] p-0 border-none bg-transparent shadow-none flex flex-col items-center justify-start md:justify-center overflow-hidden"
+                className="max-w-6xl w-[95vw] sm:max-w-none h-[100dvh] md:h-fit md:max-h-[95vh] p-0 border-none bg-transparent shadow-none flex flex-col items-center justify-start md:justify-center overflow-hidden"
                 showCloseButton={false}
             >
-                {/* Close Button — fixed within the dialog viewport so it's always visible on mobile */}
-                <button
-                    onClick={() => setIsOpen(false)}
-                    className="fixed top-3 right-3 md:absolute md:top-4 md:right-4 z-[60] p-2.5 rounded-full bg-black/50 backdrop-blur-md border border-white/20 text-white/90 hover:text-white hover:bg-black/60 transition-all duration-300 shadow-lg"
-                    aria-label="Close gallery"
-                >
-                    <X className="w-5 h-5" />
-                </button>
+                <div className="relative flex flex-col items-center group w-full h-full md:h-auto">
+                    {/* Desktop-only close button (overlays top-right of card) */}
+                    <button
+                        onClick={() => setIsOpen(false)}
+                        className="hidden md:flex absolute top-4 right-4 z-[60] p-2 rounded-full bg-black/20 backdrop-blur-md border border-white/10 text-white/70 hover:text-white hover:bg-black/40 transition-all duration-300"
+                        aria-label="Close gallery"
+                    >
+                        <X className="w-5 h-5" />
+                    </button>
 
-                <div className="relative flex flex-col items-center group w-full">
-                    {/* Navigation Buttons */}
+                    {/* Desktop Navigation Buttons */}
                     <button
                         onClick={handlePrevious}
                         className="absolute left-4 top-1/2 -translate-y-1/2 z-50 p-3 rounded-full bg-black/20 backdrop-blur-md border border-white/10 text-white/70 hover:text-white hover:bg-black/40 transition-all duration-300 opacity-0 group-hover:opacity-100 hidden md:flex"
@@ -85,9 +85,100 @@ export default function GalleryModal({
                     </button>
 
                     {/* Content Container */}
-                    <div className="flex flex-col md:flex-row max-w-6xl w-full h-full md:h-auto bg-black/40 backdrop-blur-2xl md:rounded-3xl border border-white/10 overflow-y-auto md:overflow-hidden shadow-2xl">
+                    <div className="flex flex-col md:flex-row max-w-6xl w-full h-full md:h-auto bg-black/80 md:bg-black/40 backdrop-blur-2xl md:rounded-3xl border border-white/10 shadow-2xl md:overflow-hidden">
+
+                        {/* === MOBILE LAYOUT (scrollable column) === */}
+                        <div className="flex flex-col w-full h-full md:hidden overflow-y-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
+                            {/* Mobile Header Bar with Close Button */}
+                            <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 flex-shrink-0 sticky top-0 z-10 bg-black/80 backdrop-blur-md">
+                                <span className="text-white/30 text-xs font-light">
+                                    {currentIndex + 1} / {artworks.length}
+                                </span>
+                                <button
+                                    onClick={() => setIsOpen(false)}
+                                    className="p-2 rounded-full bg-white/10 border border-white/10 text-white/80 hover:text-white hover:bg-white/20 transition-all duration-300"
+                                    aria-label="Close gallery"
+                                >
+                                    <X className="w-5 h-5" />
+                                </button>
+                            </div>
+
+                            {/* Mobile Image */}
+                            <div className="relative w-full h-[45vh] flex-shrink-0 overflow-hidden bg-white/5">
+                                <AnimatePresence mode="wait">
+                                    <motion.div
+                                        key={artwork.id}
+                                        initial={{ opacity: 0, scale: 0.95 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0, scale: 1.05 }}
+                                        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                                        className="relative w-full h-full"
+                                    >
+                                        <Image
+                                            src={artwork.image_url || artwork.src || ''}
+                                            alt={artwork.alt || artwork.title}
+                                            fill
+                                            className="object-contain p-4"
+                                            priority
+                                            unoptimized
+                                        />
+                                    </motion.div>
+                                </AnimatePresence>
+                            </div>
+
+                            {/* Mobile Metadata */}
+                            <div className="p-6 border-t border-white/10">
+                                <AnimatePresence mode="wait">
+                                    <motion.div
+                                        key={artwork.id}
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -10 }}
+                                        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                                        className="space-y-5"
+                                    >
+                                        <div>
+                                            <h2 className="text-2xl font-light text-white mb-2 leading-tight">
+                                                {artwork.title}
+                                            </h2>
+                                            <div className="flex items-center gap-3 text-white/40 text-sm font-light uppercase tracking-widest">
+                                                <span>{artwork.year}</span>
+                                                <span className="w-1 h-1 rounded-full bg-white/20" />
+                                                <span>{artwork.medium}</span>
+                                            </div>
+                                        </div>
+
+                                        <div className="h-px w-full bg-gradient-to-r from-white/10 to-transparent" />
+
+                                        <p className="text-white/60 text-base font-light leading-relaxed">
+                                            {artwork.description}
+                                        </p>
+
+                                        {/* Mobile Navigation */}
+                                        <div className="flex items-center justify-between pt-6 pb-2">
+                                            <button
+                                                onClick={handlePrevious}
+                                                className="flex items-center gap-2 text-white/40 hover:text-white transition-colors"
+                                            >
+                                                <ChevronLeft className="w-5 h-5" />
+                                                <span className="text-xs uppercase tracking-widest">Prev</span>
+                                            </button>
+                                            <button
+                                                onClick={handleNext}
+                                                className="flex items-center gap-2 text-white/40 hover:text-white transition-colors"
+                                            >
+                                                <span className="text-xs uppercase tracking-widest">Next</span>
+                                                <ChevronRight className="w-5 h-5" />
+                                            </button>
+                                        </div>
+                                    </motion.div>
+                                </AnimatePresence>
+                            </div>
+                        </div>
+
+                        {/* === DESKTOP LAYOUT (side-by-side, unchanged) === */}
                         {/* Image Section */}
-                        <div className="relative w-full md:w-2/3 h-[45vh] md:h-[80vh] flex-shrink-0 overflow-hidden bg-white/5">
+                        <div className="relative hidden md:block md:w-2/3 md:h-[80vh] overflow-hidden bg-white/5">
                             <AnimatePresence mode="wait">
                                 <motion.div
                                     key={artwork.id}
@@ -101,7 +192,7 @@ export default function GalleryModal({
                                         src={artwork.image_url || artwork.src || ''}
                                         alt={artwork.alt || artwork.title}
                                         fill
-                                        className="object-contain p-4 md:p-8"
+                                        className="object-contain p-8"
                                         priority
                                         unoptimized
                                     />
@@ -110,7 +201,7 @@ export default function GalleryModal({
                         </div>
 
                         {/* Metadata Section */}
-                        <div className="md:w-1/3 p-8 flex flex-col justify-center border-t md:border-t-0 md:border-l border-white/10">
+                        <div className="hidden md:flex md:w-1/3 p-8 flex-col justify-center border-l border-white/10">
                             <AnimatePresence mode="wait">
                                 <motion.div
                                     key={artwork.id}
@@ -136,27 +227,6 @@ export default function GalleryModal({
                                     <p className="text-white/60 text-base font-light leading-relaxed">
                                         {artwork.description}
                                     </p>
-
-                                    {/* Mobile Navigation */}
-                                    <div className="flex items-center justify-between pt-8 md:hidden">
-                                        <button
-                                            onClick={handlePrevious}
-                                            className="flex items-center gap-2 text-white/40 hover:text-white transition-colors"
-                                        >
-                                            <ChevronLeft className="w-5 h-5" />
-                                            <span className="text-xs uppercase tracking-widest">Prev</span>
-                                        </button>
-                                        <span className="text-white/20 text-xs font-light">
-                                            {currentIndex + 1} / {artworks.length}
-                                        </span>
-                                        <button
-                                            onClick={handleNext}
-                                            className="flex items-center gap-2 text-white/40 hover:text-white transition-colors"
-                                        >
-                                            <span className="text-xs uppercase tracking-widest">Next</span>
-                                            <ChevronRight className="w-5 h-5" />
-                                        </button>
-                                    </div>
                                 </motion.div>
                             </AnimatePresence>
                         </div>
