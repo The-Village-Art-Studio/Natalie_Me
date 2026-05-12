@@ -7,6 +7,8 @@ create table public.artworks (
     description text,
     image_url text,
     "order" integer default 0,
+    preview_position_x integer default 50,
+    preview_position_y integer default 50,
     created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 

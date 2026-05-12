@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef, useCallback } from "react"
 import { supabase } from "@/lib/supabase"
 import { motion, AnimatePresence } from "framer-motion"
 import { 
@@ -11,10 +11,13 @@ import {
     Loader2, 
     X, 
     Upload,
-    Check
+    Check,
+    Crosshair,
+    RotateCcw
 } from "lucide-react"
 import Image from "next/image"
 import { toast } from "sonner"
+import { Slider } from "@/components/ui/slider"
 
 interface Artwork {
     id: string
@@ -24,6 +27,8 @@ interface Artwork {
     description: string
     image_url: string
     order: number
+    preview_position_x: number
+    preview_position_y: number
 }
 
 export default function GalleryManager() {
@@ -39,8 +44,37 @@ export default function GalleryManager() {
         year: "",
         medium: "",
         description: "",
-        image_url: ""
+        image_url: "",
+        preview_position_x: 50,
+        preview_position_y: 50
     })
+
+    // Preview positioning drag state
+    const previewRef = useRef<HTMLDivElement>(null)
+    const [isDragging, setIsDragging] = useState(false)
+
+    const handlePositionFromEvent = useCallback((clientX: number, clientY: number) => {
+        if (!previewRef.current) return
+        const rect = previewRef.current.getBoundingClientRect()
+        const x = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100))
+        const y = Math.max(0, Math.min(100, ((clientY - rect.top) / rect.height) * 100))
+        setFormData(prev => ({ ...prev, preview_position_x: Math.round(x), preview_position_y: Math.round(y) }))
+    }, [])
+
+    const handlePointerDown = useCallback((e: React.PointerEvent) => {
+        setIsDragging(true)
+        ;(e.target as HTMLElement).setPointerCapture(e.pointerId)
+        handlePositionFromEvent(e.clientX, e.clientY)
+    }, [handlePositionFromEvent])
+
+    const handlePointerMove = useCallback((e: React.PointerEvent) => {
+        if (!isDragging) return
+        handlePositionFromEvent(e.clientX, e.clientY)
+    }, [isDragging, handlePositionFromEvent])
+
+    const handlePointerUp = useCallback(() => {
+        setIsDragging(false)
+    }, [])
 
     useEffect(() => {
         fetchArtworks()
@@ -63,7 +97,9 @@ export default function GalleryManager() {
             year: "",
             medium: "",
             description: "",
-            image_url: ""
+            image_url: "",
+            preview_position_x: 50,
+            preview_position_y: 50
         })
         setIsAdding(false)
         setIsEditing(null)
@@ -143,7 +179,9 @@ export default function GalleryManager() {
             year: artwork.year,
             medium: artwork.medium,
             description: artwork.description,
-            image_url: artwork.image_url
+            image_url: artwork.image_url,
+            preview_position_x: artwork.preview_position_x ?? 50,
+            preview_position_y: artwork.preview_position_y ?? 50
         })
         setIsAdding(true)
     }
@@ -219,6 +257,100 @@ export default function GalleryManager() {
                                             disabled={uploading}
                                         />
                                     </div>
+
+                                    {/* Preview Positioning Tool */}
+                                    {formData.image_url && (
+                                        <div className="space-y-4 mt-6">
+                                            <div className="flex items-center justify-between">
+                                                <label className="text-white/60 text-xs font-light tracking-wide uppercase flex items-center gap-2">
+                                                    <Crosshair className="w-3.5 h-3.5" />
+                                                    Preview Positioning
+                                                </label>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setFormData(prev => ({ ...prev, preview_position_x: 50, preview_position_y: 50 }))}
+                                                    className="flex items-center gap-1.5 text-white/30 hover:text-white/60 text-[10px] uppercase tracking-widest transition-colors"
+                                                >
+                                                    <RotateCcw className="w-3 h-3" />
+                                                    Reset
+                                                </button>
+                                            </div>
+
+                                            {/* Interactive Preview */}
+                                            <div
+                                                ref={previewRef}
+                                                onPointerDown={handlePointerDown}
+                                                onPointerMove={handlePointerMove}
+                                                onPointerUp={handlePointerUp}
+                                                className="relative aspect-square rounded-xl overflow-hidden cursor-crosshair border border-white/10 select-none touch-none"
+                                            >
+                                                <Image
+                                                    src={formData.image_url}
+                                                    alt="Position preview"
+                                                    fill
+                                                    className="object-cover pointer-events-none"
+                                                    style={{ objectPosition: `${formData.preview_position_x}% ${formData.preview_position_y}%` }}
+                                                    unoptimized
+                                                />
+                                                {/* Crosshair overlay */}
+                                                <div className="absolute inset-0 pointer-events-none">
+                                                    {/* Vertical line */}
+                                                    <div
+                                                        className="absolute top-0 bottom-0 w-px bg-white/40"
+                                                        style={{ left: `${formData.preview_position_x}%` }}
+                                                    />
+                                                    {/* Horizontal line */}
+                                                    <div
+                                                        className="absolute left-0 right-0 h-px bg-white/40"
+                                                        style={{ top: `${formData.preview_position_y}%` }}
+                                                    />
+                                                    {/* Center dot */}
+                                                    <div
+                                                        className="absolute w-4 h-4 rounded-full border-2 border-white bg-white/20 shadow-lg shadow-black/50 -translate-x-1/2 -translate-y-1/2"
+                                                        style={{ left: `${formData.preview_position_x}%`, top: `${formData.preview_position_y}%` }}
+                                                    />
+                                                </div>
+                                                {/* Instruction overlay */}
+                                                <div className="absolute bottom-2 left-0 right-0 text-center">
+                                                    <span className="text-[10px] text-white/50 bg-black/50 backdrop-blur-sm px-2 py-1 rounded-full">
+                                                        Click or drag to set focal point
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            {/* Sliders */}
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div className="space-y-2">
+                                                    <div className="flex items-center justify-between">
+                                                        <span className="text-white/40 text-[10px] uppercase tracking-widest">Horizontal</span>
+                                                        <span className="text-white/60 text-[10px] font-mono">{formData.preview_position_x}%</span>
+                                                    </div>
+                                                    <Slider
+                                                        value={[formData.preview_position_x]}
+                                                        min={0}
+                                                        max={100}
+                                                        step={1}
+                                                        onValueChange={([v]) => setFormData(prev => ({ ...prev, preview_position_x: v }))}
+                                                        className="[&_[data-slot=slider-track]]:bg-white/10 [&_[data-slot=slider-range]]:bg-white/30 [&_[data-slot=slider-thumb]]:border-white/50 [&_[data-slot=slider-thumb]]:bg-white [&_[data-slot=slider-thumb]]:w-3 [&_[data-slot=slider-thumb]]:h-3"
+                                                    />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <div className="flex items-center justify-between">
+                                                        <span className="text-white/40 text-[10px] uppercase tracking-widest">Vertical</span>
+                                                        <span className="text-white/60 text-[10px] font-mono">{formData.preview_position_y}%</span>
+                                                    </div>
+                                                    <Slider
+                                                        value={[formData.preview_position_y]}
+                                                        min={0}
+                                                        max={100}
+                                                        step={1}
+                                                        onValueChange={([v]) => setFormData(prev => ({ ...prev, preview_position_y: v }))}
+                                                        className="[&_[data-slot=slider-track]]:bg-white/10 [&_[data-slot=slider-range]]:bg-white/30 [&_[data-slot=slider-thumb]]:border-white/50 [&_[data-slot=slider-thumb]]:bg-white [&_[data-slot=slider-thumb]]:w-3 [&_[data-slot=slider-thumb]]:h-3"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
 
                                 {/* Form Fields */}
@@ -302,6 +434,7 @@ export default function GalleryManager() {
                                     alt={artwork.title} 
                                     fill 
                                     className="object-cover group-hover:scale-105 transition-transform duration-500" 
+                                    style={{ objectPosition: `${artwork.preview_position_x ?? 50}% ${artwork.preview_position_y ?? 50}%` }}
                                     unoptimized
                                 />
                                 <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">

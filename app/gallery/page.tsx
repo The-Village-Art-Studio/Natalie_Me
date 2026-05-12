@@ -14,6 +14,8 @@ export interface Artwork {
     medium: string
     description: string
     image_url?: string
+    preview_position_x?: number
+    preview_position_y?: number
 }
 
 import GalleryModal from "@/components/gallery-modal"
@@ -81,6 +83,7 @@ export default function GalleryPage() {
                                         alt={artwork.alt || artwork.title}
                                         fill
                                         className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                        style={{ objectPosition: `${artwork.preview_position_x ?? 50}% ${artwork.preview_position_y ?? 50}%` }}
                                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                         unoptimized
                                     />
