@@ -56,7 +56,7 @@ export default function GalleryModal({
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogContent
-                className="max-w-6xl w-[95vw] sm:max-w-none h-fit max-h-[95vh] p-0 border-none bg-transparent shadow-none flex flex-col items-center justify-center overflow-y-auto overflow-x-hidden"
+                className="max-w-6xl w-[95vw] md:w-[95vw] sm:max-w-none h-[100dvh] md:h-fit md:max-h-[95vh] p-0 border-none bg-transparent shadow-none flex flex-col items-center justify-start md:justify-center overflow-hidden"
                 showCloseButton={false}
             >
                 {/* Close Button — fixed within the dialog viewport so it's always visible on mobile */}
@@ -85,9 +85,9 @@ export default function GalleryModal({
                     </button>
 
                     {/* Content Container */}
-                    <div className="flex flex-col md:flex-row max-w-6xl w-full bg-black/40 backdrop-blur-2xl rounded-3xl border border-white/10 overflow-hidden shadow-2xl">
+                    <div className="flex flex-col md:flex-row max-w-6xl w-full h-full md:h-auto bg-black/40 backdrop-blur-2xl md:rounded-3xl border border-white/10 overflow-y-auto md:overflow-hidden shadow-2xl">
                         {/* Image Section */}
-                        <div className="relative aspect-square md:aspect-auto md:w-2/3 h-[50vh] md:h-[80vh] overflow-hidden bg-white/5">
+                        <div className="relative w-full md:w-2/3 h-[45vh] md:h-[80vh] flex-shrink-0 overflow-hidden bg-white/5">
                             <AnimatePresence mode="wait">
                                 <motion.div
                                     key={artwork.id}
