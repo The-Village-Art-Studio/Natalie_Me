@@ -13,7 +13,11 @@ import {
     Upload,
     Check,
     Crosshair,
-    RotateCcw
+    RotateCcw,
+    GripVertical,
+    ArrowUpDown,
+    ArrowUp,
+    ArrowDown
 } from "lucide-react"
 import Image from "next/image"
 import { toast } from "sonner"
@@ -37,6 +41,10 @@ export default function GalleryManager() {
     const [isAdding, setIsAdding] = useState(false)
     const [isEditing, setIsEditing] = useState<Artwork | null>(null)
     const [uploading, setUploading] = useState(false)
+    const [draggedIndex, setDraggedIndex] = useState<number | null>(null)
+    const [dragOverIndex, setDragOverIndex] = useState<number | null>(null)
+    const [isReordering, setIsReordering] = useState(false)
+    const [saving, setSaving] = useState(false)
 
     // Form state
     const [formData, setFormData] = useState({
@@ -134,27 +142,39 @@ export default function GalleryManager() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        setLoading(true)
+        setSaving(true)
 
-        if (isEditing) {
-            const { error } = await supabase
-                .from('artworks')
-                .update(formData)
-                .eq('id', isEditing.id)
-            
-            if (error) toast.error("Failed to update artwork")
-            else toast.success("Artwork updated!")
-        } else {
-            const { error } = await supabase
-                .from('artworks')
-                .insert([{ ...formData, order: artworks.length }])
-            
-            if (error) toast.error("Failed to add artwork")
-            else toast.success("Artwork added!")
+        try {
+            if (isEditing) {
+                const { error } = await supabase
+                    .from('artworks')
+                    .update(formData)
+                    .eq('id', isEditing.id)
+                
+                if (error) {
+                    console.error('Update error:', error)
+                    toast.error("Failed to update artwork: " + error.message)
+                    return
+                }
+                toast.success("Artwork updated!")
+            } else {
+                const { error } = await supabase
+                    .from('artworks')
+                    .insert([{ ...formData, order: artworks.length }])
+                
+                if (error) {
+                    console.error('Insert error:', error)
+                    toast.error("Failed to add artwork: " + error.message)
+                    return
+                }
+                toast.success("Artwork added!")
+            }
+
+            await fetchArtworks()
+            resetForm()
+        } finally {
+            setSaving(false)
         }
-
-        fetchArtworks()
-        resetForm()
     }
 
     const handleDelete = async (id: string) => {
@@ -186,22 +206,127 @@ export default function GalleryManager() {
         setIsAdding(true)
     }
 
+    // --- Drag-to-reorder handlers ---
+    const handleDragStart = (index: number) => {
+        setDraggedIndex(index)
+    }
+
+    const handleDragOver = (e: React.DragEvent, index: number) => {
+        e.preventDefault()
+        setDragOverIndex(index)
+    }
+
+    const handleDragEnd = async () => {
+        if (draggedIndex === null || dragOverIndex === null || draggedIndex === dragOverIndex) {
+            setDraggedIndex(null)
+            setDragOverIndex(null)
+            return
+        }
+
+        const reordered = [...artworks]
+        const [moved] = reordered.splice(draggedIndex, 1)
+        reordered.splice(dragOverIndex, 0, moved)
+
+        // Optimistic update
+        setArtworks(reordered)
+        setDraggedIndex(null)
+        setDragOverIndex(null)
+
+        // Persist order to database
+        try {
+            const updates = reordered.map((art, i) =>
+                supabase.from('artworks').update({ order: i }).eq('id', art.id)
+            )
+            await Promise.all(updates)
+            toast.success("Order saved")
+        } catch {
+            toast.error("Failed to save order")
+            await fetchArtworks()
+        }
+    }
+
+    const handleSortByYear = async () => {
+        const sorted = [...artworks].sort((a, b) => {
+            const yearA = parseInt(a.year) || 0
+            const yearB = parseInt(b.year) || 0
+            return yearB - yearA // newest first
+        })
+
+        setArtworks(sorted)
+
+        try {
+            const updates = sorted.map((art, i) =>
+                supabase.from('artworks').update({ order: i }).eq('id', art.id)
+            )
+            await Promise.all(updates)
+            toast.success("Sorted by year (newest first)")
+        } catch {
+            toast.error("Failed to save sort order")
+            await fetchArtworks()
+        }
+    }
+
+    const moveArtwork = async (fromIndex: number, direction: 'up' | 'down') => {
+        const toIndex = direction === 'up' ? fromIndex - 1 : fromIndex + 1
+        if (toIndex < 0 || toIndex >= artworks.length) return
+
+        const reordered = [...artworks]
+        const [moved] = reordered.splice(fromIndex, 1)
+        reordered.splice(toIndex, 0, moved)
+
+        setArtworks(reordered)
+
+        try {
+            await Promise.all([
+                supabase.from('artworks').update({ order: toIndex }).eq('id', moved.id),
+                supabase.from('artworks').update({ order: fromIndex }).eq('id', reordered[fromIndex].id)
+            ])
+        } catch {
+            toast.error("Failed to reorder")
+            await fetchArtworks()
+        }
+    }
+
     return (
         <div className="space-y-12">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between flex-wrap gap-4">
                 <div>
                     <h1 className="text-4xl font-light text-white mb-2">Gallery <span className="font-medium">Manager</span></h1>
                     <p className="text-white/40 text-sm font-light uppercase tracking-widest">Manage your artwork collection</p>
                 </div>
-                {!isAdding && (
-                    <button
-                        onClick={() => setIsAdding(true)}
-                        className="flex items-center gap-2 px-6 py-3 rounded-full bg-white text-black text-sm font-medium hover:bg-white/90 transition-all active:scale-[0.98]"
-                    >
-                        <Plus className="w-4 h-4" />
-                        Add New Artwork
-                    </button>
-                )}
+                <div className="flex items-center gap-3">
+                    {!isAdding && artworks.length > 1 && (
+                        <>
+                            <button
+                                onClick={() => setIsReordering(!isReordering)}
+                                className={`flex items-center gap-2 px-5 py-3 rounded-full text-sm font-medium transition-all active:scale-[0.98] ${
+                                    isReordering 
+                                        ? 'bg-white/20 text-white border border-white/30' 
+                                        : 'bg-white/10 text-white/70 border border-white/10 hover:bg-white/15 hover:text-white'
+                                }`}
+                            >
+                                <GripVertical className="w-4 h-4" />
+                                {isReordering ? 'Done' : 'Reorder'}
+                            </button>
+                            <button
+                                onClick={handleSortByYear}
+                                className="flex items-center gap-2 px-5 py-3 rounded-full bg-white/10 text-white/70 border border-white/10 text-sm font-medium hover:bg-white/15 hover:text-white transition-all active:scale-[0.98]"
+                            >
+                                <ArrowUpDown className="w-4 h-4" />
+                                Sort by Year
+                            </button>
+                        </>
+                    )}
+                    {!isAdding && (
+                        <button
+                            onClick={() => setIsAdding(true)}
+                            className="flex items-center gap-2 px-6 py-3 rounded-full bg-white text-black text-sm font-medium hover:bg-white/90 transition-all active:scale-[0.98]"
+                        >
+                            <Plus className="w-4 h-4" />
+                            Add New Artwork
+                        </button>
+                    )}
+                </div>
             </div>
 
             <AnimatePresence>
@@ -403,9 +528,10 @@ export default function GalleryManager() {
                                     </div>
                                     <button
                                         type="submit"
-                                        disabled={loading || uploading || !formData.image_url}
-                                        className="w-full py-4 rounded-xl bg-white text-black text-sm font-medium hover:bg-white/90 active:scale-[0.98] transition-all disabled:opacity-50"
+                                        disabled={saving || uploading || !formData.image_url}
+                                        className="w-full py-4 rounded-xl bg-white text-black text-sm font-medium hover:bg-white/90 active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
                                     >
+                                        {saving && <Loader2 className="w-4 h-4 animate-spin" />}
                                         {isEditing ? "Update Artwork" : "Save Artwork"}
                                     </button>
                                 </div>
@@ -422,12 +548,51 @@ export default function GalleryManager() {
                 </div>
             ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {artworks.map((artwork) => (
+                    {artworks.map((artwork, index) => (
                         <motion.div
                             key={artwork.id}
                             layout
-                            className="group relative rounded-2xl bg-white/5 border border-white/10 overflow-hidden hover:border-white/30 transition-all duration-300"
+                            draggable={isReordering}
+                            onDragStart={() => handleDragStart(index)}
+                            onDragOver={(e: React.DragEvent) => handleDragOver(e, index)}
+                            onDragEnd={handleDragEnd}
+                            className={`group relative rounded-2xl bg-white/5 border overflow-hidden transition-all duration-300 ${
+                                isReordering 
+                                    ? 'cursor-grab active:cursor-grabbing border-white/20 hover:border-white/40' 
+                                    : 'border-white/10 hover:border-white/30'
+                            } ${
+                                dragOverIndex === index ? 'ring-2 ring-white/40 scale-[1.02]' : ''
+                            } ${
+                                draggedIndex === index ? 'opacity-50' : ''
+                            }`}
                         >
+                            {/* Reorder controls */}
+                            {isReordering && (
+                                <div className="absolute top-3 right-3 z-20 flex flex-col gap-1">
+                                    <button
+                                        onClick={(e) => { e.stopPropagation(); moveArtwork(index, 'up') }}
+                                        disabled={index === 0}
+                                        className="p-1.5 rounded-lg bg-black/60 backdrop-blur-sm text-white/70 hover:text-white border border-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                                    >
+                                        <ArrowUp className="w-3.5 h-3.5" />
+                                    </button>
+                                    <button
+                                        onClick={(e) => { e.stopPropagation(); moveArtwork(index, 'down') }}
+                                        disabled={index === artworks.length - 1}
+                                        className="p-1.5 rounded-lg bg-black/60 backdrop-blur-sm text-white/70 hover:text-white border border-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                                    >
+                                        <ArrowDown className="w-3.5 h-3.5" />
+                                    </button>
+                                </div>
+                            )}
+                            {isReordering && (
+                                <div className="absolute top-3 left-3 z-20">
+                                    <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-black/60 backdrop-blur-sm border border-white/10">
+                                        <GripVertical className="w-3.5 h-3.5 text-white/50" />
+                                        <span className="text-white/60 text-[10px] font-mono">#{index + 1}</span>
+                                    </div>
+                                </div>
+                            )}
                             <div className="relative aspect-square overflow-hidden bg-white/5">
                                 <Image 
                                     src={artwork.image_url} 
@@ -437,20 +602,22 @@ export default function GalleryManager() {
                                     style={{ objectPosition: `${artwork.preview_position_x ?? 50}% ${artwork.preview_position_y ?? 50}%` }}
                                     unoptimized
                                 />
-                                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
-                                    <button 
-                                        onClick={() => startEditing(artwork)}
-                                        className="p-3 rounded-full bg-white text-black hover:scale-110 transition-transform"
-                                    >
-                                        <Edit2 className="w-4 h-4" />
-                                    </button>
-                                    <button 
-                                        onClick={() => handleDelete(artwork.id)}
-                                        className="p-3 rounded-full bg-red-500 text-white hover:scale-110 transition-transform"
-                                    >
-                                        <Trash2 className="w-4 h-4" />
-                                    </button>
-                                </div>
+                                {!isReordering && (
+                                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+                                        <button 
+                                            onClick={() => startEditing(artwork)}
+                                            className="p-3 rounded-full bg-white text-black hover:scale-110 transition-transform"
+                                        >
+                                            <Edit2 className="w-4 h-4" />
+                                        </button>
+                                        <button 
+                                            onClick={() => handleDelete(artwork.id)}
+                                            className="p-3 rounded-full bg-red-500 text-white hover:scale-110 transition-transform"
+                                        >
+                                            <Trash2 className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                )}
                             </div>
                             <div className="p-4">
                                 <h3 className="text-white font-medium truncate">{artwork.title}</h3>
