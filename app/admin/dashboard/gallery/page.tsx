@@ -146,25 +146,51 @@ export default function GalleryManager() {
 
         try {
             if (isEditing) {
-                const { error } = await supabase
+                let res = await supabase
                     .from('artworks')
                     .update(formData)
                     .eq('id', isEditing.id)
                 
-                if (error) {
-                    console.error('Update error:', error)
-                    toast.error("Failed to update artwork: " + error.message)
+                // Fallback for missing columns if migration hasn't been run
+                if (res.error && res.error.message.includes('does not exist')) {
+                    const { preview_position_x, preview_position_y, ...safeData } = formData
+                    res = await supabase.from('artworks').update(safeData).eq('id', isEditing.id)
+                    if (!res.error) {
+                        toast.success("Artwork updated (Note: focal point requires DB update)")
+                        await fetchArtworks()
+                        resetForm()
+                        return
+                    }
+                }
+
+                if (res.error) {
+                    console.error('Update error:', res.error)
+                    toast.error("Failed to update artwork: " + res.error.message)
                     return
                 }
                 toast.success("Artwork updated!")
             } else {
-                const { error } = await supabase
+                const insertData = { ...formData, order: artworks.length }
+                let res = await supabase
                     .from('artworks')
-                    .insert([{ ...formData, order: artworks.length }])
+                    .insert([insertData])
                 
-                if (error) {
-                    console.error('Insert error:', error)
-                    toast.error("Failed to add artwork: " + error.message)
+                // Fallback for missing columns if migration hasn't been run
+                if (res.error && res.error.message.includes('does not exist')) {
+                    const { preview_position_x, preview_position_y, ...safeData } = formData
+                    const safeInsertData = { ...safeData, order: artworks.length }
+                    res = await supabase.from('artworks').insert([safeInsertData as any])
+                    if (!res.error) {
+                        toast.success("Artwork added (Note: focal point requires DB update)")
+                        await fetchArtworks()
+                        resetForm()
+                        return
+                    }
+                }
+
+                if (res.error) {
+                    console.error('Insert error:', res.error)
+                    toast.error("Failed to add artwork: " + res.error.message)
                     return
                 }
                 toast.success("Artwork added!")
