@@ -6,6 +6,7 @@ import { GeistMono } from "geist/font/mono"
 import "./globals.css"
 import BackToTop from "@/components/back-to-top"
 import AtmosphereBackground from "@/components/atmosphere-background"
+import { Toaster } from "@/components/ui/sonner"
 
 const josefin = Josefin_Sans({
   subsets: ["latin"],
@@ -62,6 +63,7 @@ html {
         <AtmosphereBackground />
         {children}
         <BackToTop />
+        <Toaster />
       </body>
     </html>
   )

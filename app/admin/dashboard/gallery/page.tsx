@@ -152,7 +152,7 @@ export default function GalleryManager() {
                     .eq('id', isEditing.id)
                 
                 // Fallback for missing columns if migration hasn't been run
-                if (res.error && res.error.message.includes('does not exist')) {
+                if (res.error && (res.error.code === 'PGRST204' || res.error.message.includes('Could not find'))) {
                     const { preview_position_x, preview_position_y, ...safeData } = formData
                     res = await supabase.from('artworks').update(safeData).eq('id', isEditing.id)
                     if (!res.error) {
@@ -176,7 +176,7 @@ export default function GalleryManager() {
                     .insert([insertData])
                 
                 // Fallback for missing columns if migration hasn't been run
-                if (res.error && res.error.message.includes('does not exist')) {
+                if (res.error && (res.error.code === 'PGRST204' || res.error.message.includes('Could not find'))) {
                     const { preview_position_x, preview_position_y, ...safeData } = formData
                     const safeInsertData = { ...safeData, order: artworks.length }
                     res = await supabase.from('artworks').insert([safeInsertData as any])
