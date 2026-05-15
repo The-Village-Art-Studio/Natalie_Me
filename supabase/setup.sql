@@ -64,7 +64,7 @@ create policy "Allow admin full access" on public.bio for all using (auth.uid() 
 -- Messages
 alter table public.messages enable row level security;
 create policy "Allow admin full access" on public.messages for all using (auth.uid() is not null);
-create policy "Allow public insert access" on public.messages for insert with check (true);
+create policy "Allow public insert access" on public.messages for insert with check (auth.role() = 'anon');
 
 -- 6. Storage Buckets
 -- Note: You'll need to create these in the Supabase Dashboard UI under "Storage":
