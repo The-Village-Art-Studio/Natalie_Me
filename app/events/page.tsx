@@ -46,10 +46,10 @@ export default function EventsPage() {
         <div className="max-w-4xl mx-auto">
           {/* Page Title */}
           <div className="mb-12">
-            <h1 className="text-4xl md:text-5xl font-light text-white mb-4">
+            <h1 className="text-4xl md:text-5xl font-light text-stone-900 mb-4">
               <span className="font-medium">Events</span> &amp; Shows
             </h1>
-            <p className="text-white/60 text-sm font-light max-w-md">
+            <p className="text-stone-600 text-sm font-light max-w-md">
               Stay updated on upcoming exhibitions, workshops, and artist talks.
             </p>
           </div>
@@ -58,24 +58,24 @@ export default function EventsPage() {
           <div className="space-y-6">
             {loading ? (
               Array.from({ length: 2 }).map((_, i) => (
-                <div key={i} className="p-8 rounded-2xl bg-white/5 animate-pulse h-48" />
+                <div key={i} className="p-8 rounded-2xl bg-black/[0.03] animate-pulse h-48" />
               ))
             ) : events.length > 0 ? (
               events.map((event) => (
                 <div
                   key={event.id}
-                  className="p-8 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 group hover:border-white/30 transition-all duration-300"
+                  className="p-8 rounded-2xl bg-white/50 backdrop-blur-md border border-black/[0.06] shadow-sm group hover:border-black/[0.12] transition-all duration-300"
                 >
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
                     <div>
-                      <span className="text-white/40 text-xs font-light tracking-widest uppercase mb-1 block">
+                      <span className="text-stone-400 text-xs font-light tracking-widest uppercase mb-1 block">
                         {event.date_string}
                       </span>
-                      <h2 className="text-2xl font-light text-white group-hover:text-white transition-colors">
+                      <h2 className="text-2xl font-light text-stone-900 group-hover:text-black transition-colors">
                         {event.title}
                       </h2>
                     </div>
-                    <div className="flex items-center gap-2 text-white/60 text-xs font-light">
+                    <div className="flex items-center gap-2 text-stone-500 text-xs font-light">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -83,7 +83,7 @@ export default function EventsPage() {
                       {event.location}
                     </div>
                   </div>
-                  <p className="text-white/60 text-sm font-light leading-relaxed max-w-2xl mb-6">
+                  <p className="text-stone-600 text-sm font-light leading-relaxed max-w-2xl mb-6">
                     {event.description}
                   </p>
                   {event.link && (
@@ -91,7 +91,7 @@ export default function EventsPage() {
                       href={event.link} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="inline-block px-6 py-2 rounded-full border border-white/20 text-white text-xs font-light hover:bg-white/10 transition-all"
+                      className="inline-block px-6 py-2 rounded-full border border-stone-300 text-stone-850 text-xs font-light hover:bg-stone-900/[0.04] transition-all"
                     >
                       Learn More
                     </a>
@@ -99,8 +99,8 @@ export default function EventsPage() {
                 </div>
               ))
             ) : (
-              <div className="p-12 text-center rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10">
-                <p className="text-white/40 text-sm font-light">No upcoming events scheduled at this time. Please check back later.</p>
+              <div className="p-12 text-center rounded-2xl bg-white/50 backdrop-blur-md border border-black/[0.06] shadow-sm">
+                <p className="text-stone-400 text-sm font-light">No upcoming events scheduled at this time. Please check back later.</p>
               </div>
             )}
           </div>
@@ -109,7 +109,7 @@ export default function EventsPage() {
           <div className="mt-16 text-center">
             <Link
               href="/"
-              className="inline-flex items-center gap-2 text-white/60 hover:text-white text-sm font-light transition-colors duration-200"
+              className="inline-flex items-center gap-2 text-stone-500 hover:text-stone-900 text-sm font-light transition-colors duration-200"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" />

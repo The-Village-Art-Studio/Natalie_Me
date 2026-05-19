@@ -6,35 +6,35 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
-    "/admin/login/page": [
+    "/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/admin/login/page.js"
+      "static/chunks/app/page.js"
     ],
     "/icon/route": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/icon/route.js"
     ],
-    "/admin/dashboard/layout": [
+    "/gallery/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/admin/dashboard/layout.js"
+      "static/chunks/app/gallery/page.js"
     ],
-    "/admin/dashboard/page": [
+    "/contact/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/admin/dashboard/page.js"
+      "static/chunks/app/contact/page.js"
     ],
-    "/admin/dashboard/gallery/page": [
+    "/events/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/admin/dashboard/gallery/page.js"
+      "static/chunks/app/events/page.js"
     ],
-    "/api/upload/route": [
+    "/bio/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/api/upload/route.js"
+      "static/chunks/app/bio/page.js"
     ]
   }
 }

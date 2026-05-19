@@ -45,33 +45,33 @@ export default function ContactPage() {
             <main className="relative z-10 flex items-center justify-center min-h-screen px-8 py-24">
                 <div className="max-w-lg text-center">
                     {/* Page Title */}
-                    <h1 className="text-4xl md:text-5xl font-light text-white mb-6">
+                    <h1 className="text-4xl md:text-5xl font-light text-stone-900 mb-6">
                         <span className="font-medium">Get in Touch</span>
                     </h1>
 
                     {/* Bio */}
-                    <p className="text-white/60 text-sm font-light mb-8 leading-relaxed">
+                    <p className="text-stone-600 text-sm font-light mb-8 leading-relaxed">
                         Hi! My name is Natalie, and I&apos;m a painter with a Ukrainian background. For inquiries about commissions, collaborations, or to purchase artwork, feel free to reach out through the form below or Instagram.
                     </p>
 
                     {/* Contact Form */}
                     {submitted ? (
-                        <div className="w-full max-w-md mx-auto p-12 rounded-3xl bg-white/5 backdrop-blur-md border border-white/10 flex flex-col items-center space-y-4">
-                            <CheckCircle2 className="w-12 h-12 text-green-400 mb-2" />
-                            <h2 className="text-xl font-light text-white">Message Received</h2>
-                            <p className="text-white/40 text-sm font-light">Thank you for reaching out! I&apos;ll get back to you as soon as possible.</p>
+                        <div className="w-full max-w-md mx-auto p-12 rounded-3xl bg-white/50 backdrop-blur-md border border-black/[0.06] shadow-sm flex flex-col items-center space-y-4">
+                            <CheckCircle2 className="w-12 h-12 text-emerald-600 mb-2" />
+                            <h2 className="text-xl font-light text-stone-900">Message Received</h2>
+                            <p className="text-stone-500 text-sm font-light">Thank you for reaching out! I&apos;ll get back to you as soon as possible.</p>
                             <button 
                                 onClick={() => setSubmitted(false)}
-                                className="mt-6 text-white/60 hover:text-white text-xs uppercase tracking-widest underline underline-offset-4"
+                                className="mt-6 text-stone-500 hover:text-stone-900 text-xs uppercase tracking-widest underline underline-offset-4"
                             >
                                 Send another message
                             </button>
                         </div>
                     ) : (
-                        <form onSubmit={handleSubmit} className="w-full max-w-md mx-auto p-8 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 space-y-5">
+                        <form onSubmit={handleSubmit} className="w-full max-w-md mx-auto p-8 rounded-2xl bg-white/50 backdrop-blur-md border border-black/[0.06] shadow-sm space-y-5">
                             {/* Name Field */}
                             <div className="space-y-2 text-left">
-                                <label htmlFor="name" className="block text-white/80 text-xs font-light tracking-wide uppercase px-2">
+                                <label htmlFor="name" className="block text-stone-600 text-xs font-light tracking-wide uppercase px-2">
                                     Name
                                 </label>
                                 <input
@@ -80,14 +80,14 @@ export default function ContactPage() {
                                     name="name"
                                     required
                                     disabled={loading}
-                                    className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm font-light placeholder:text-white/20 focus:outline-none focus:border-white/30 focus:bg-white/10 transition-all duration-200 disabled:opacity-50"
+                                    className="w-full px-4 py-3 rounded-xl bg-white/60 border border-black/[0.08] text-stone-900 text-sm font-light placeholder:text-stone-400 focus:outline-none focus:border-stone-400 focus:bg-white transition-all duration-200 disabled:opacity-50"
                                     placeholder="Your name"
                                 />
                             </div>
 
                             {/* Email Field */}
                             <div className="space-y-2 text-left">
-                                <label htmlFor="email" className="block text-white/80 text-xs font-light tracking-wide uppercase px-2">
+                                <label htmlFor="email" className="block text-stone-600 text-xs font-light tracking-wide uppercase px-2">
                                     Email
                                 </label>
                                 <input
@@ -96,14 +96,14 @@ export default function ContactPage() {
                                     name="email"
                                     required
                                     disabled={loading}
-                                    className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm font-light placeholder:text-white/20 focus:outline-none focus:border-white/30 focus:bg-white/10 transition-all duration-200 disabled:opacity-50"
+                                    className="w-full px-4 py-3 rounded-xl bg-white/60 border border-black/[0.08] text-stone-900 text-sm font-light placeholder:text-stone-400 focus:outline-none focus:border-stone-400 focus:bg-white transition-all duration-200 disabled:opacity-50"
                                     placeholder="your@email.com"
                                 />
                             </div>
 
                             {/* Subject Field */}
                             <div className="space-y-2 text-left">
-                                <label htmlFor="subject" className="block text-white/80 text-xs font-light tracking-wide uppercase px-2">
+                                <label htmlFor="subject" className="block text-stone-600 text-xs font-light tracking-wide uppercase px-2">
                                     Subject
                                 </label>
                                 <input
@@ -112,14 +112,14 @@ export default function ContactPage() {
                                     name="subject"
                                     required
                                     disabled={loading}
-                                    className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm font-light placeholder:text-white/20 focus:outline-none focus:border-white/30 focus:bg-white/10 transition-all duration-200 disabled:opacity-50"
+                                    className="w-full px-4 py-3 rounded-xl bg-white/60 border border-black/[0.08] text-stone-900 text-sm font-light placeholder:text-stone-400 focus:outline-none focus:border-stone-400 focus:bg-white transition-all duration-200 disabled:opacity-50"
                                     placeholder="Commission inquiry, collaboration, etc."
                                 />
                             </div>
 
                             {/* Message Field */}
                             <div className="space-y-2 text-left">
-                                <label htmlFor="message" className="block text-white/80 text-xs font-light tracking-wide uppercase px-2">
+                                <label htmlFor="message" className="block text-stone-600 text-xs font-light tracking-wide uppercase px-2">
                                     Message
                                 </label>
                                 <textarea
@@ -128,7 +128,7 @@ export default function ContactPage() {
                                     rows={4}
                                     required
                                     disabled={loading}
-                                    className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm font-light placeholder:text-white/20 focus:outline-none focus:border-white/30 focus:bg-white/10 transition-all duration-200 resize-none disabled:opacity-50"
+                                    className="w-full px-4 py-3 rounded-xl bg-white/60 border border-black/[0.08] text-stone-900 text-sm font-light placeholder:text-stone-400 focus:outline-none focus:border-stone-400 focus:bg-white transition-all duration-200 resize-none disabled:opacity-50"
                                     placeholder="Tell me about your project..."
                                 />
                             </div>
@@ -137,7 +137,7 @@ export default function ContactPage() {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full py-3.5 mt-2 rounded-xl bg-white text-black text-sm font-medium hover:bg-white/90 active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50"
+                                className="w-full py-3.5 mt-2 rounded-xl bg-stone-900 text-white text-sm font-medium hover:bg-stone-800 active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50"
                             >
                                 {loading ? (
                                     <>
@@ -158,7 +158,7 @@ export default function ContactPage() {
                     <div className="mt-12">
                         <Link
                             href="/"
-                            className="inline-flex items-center gap-2 text-white/60 hover:text-white text-sm font-light transition-colors duration-200"
+                            className="inline-flex items-center gap-2 text-stone-500 hover:text-stone-900 text-sm font-light transition-colors duration-200"
                         >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" />

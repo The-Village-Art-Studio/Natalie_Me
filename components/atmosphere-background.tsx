@@ -74,19 +74,19 @@ export default function AtmosphereBackground() {
   // TWEAK POINTS (Adjust these constants quickly)
   // ============================================
   const MOVEMENT_RANGE = -20 // Adjust max pixel movement
-  const FABRIC_OPACITY = 0.12 // Recommended range: 0.05 - 0.20
-  const BACKGROUND_OPACITY = 0.6 // Adjust 0.1 to 1.0 to control brightness (lower is darker)
+  const FABRIC_OPACITY = 0.05 // Recommended range for bright background: 0.03 - 0.08
+  const BACKGROUND_OPACITY = 0.95 // Adjust 0.1 to 1.0 to control brightness (higher is brighter)
   // ============================================
 
   return (
-    <div className="fixed inset-0 z-[-100] pointer-events-none overflow-hidden bg-black">
+    <div className="fixed inset-0 z-[-100] pointer-events-none overflow-hidden bg-[#faf9f6]">
       
       {/* Full Background (Leaf Shadow HD image) drifting with pointer */}
       <div 
         id="atmosphere-shadow"
         className="absolute w-[110%] h-[110%] -left-[5%] -top-[5%] transition-transform duration-75"
         style={{
-          backgroundImage: "url('/backgrounds/leaf-shadow-hd.png')",
+          backgroundImage: "url('/background/palm-shadow.jpg')",
           backgroundSize: "cover",
           backgroundPosition: "center",
           opacity: BACKGROUND_OPACITY,
@@ -103,15 +103,7 @@ export default function AtmosphereBackground() {
           backgroundSize: "cover",
           backgroundPosition: "center",
           opacity: FABRIC_OPACITY,
-          mixBlendMode: "overlay"
-        }}
-      />
-
-      {/* Optional vignette overlay to help frame the content and keep edge text readable */}
-      <div 
-        className="absolute inset-0 w-full h-full pointer-events-none"
-        style={{
-          background: "radial-gradient(circle, rgba(0,0,0,0) 60%, rgba(0,0,0,0.4) 100%)",
+          mixBlendMode: "multiply"
         }}
       />
     </div>
