@@ -164,7 +164,7 @@ export default function BioEditor() {
     if (loading) {
         return (
             <div className="flex justify-center py-20">
-                <Loader2 className="w-8 h-8 text-white/20 animate-spin" />
+                <Loader2 className="w-8 h-8 text-stone-300 animate-spin" />
             </div>
         )
     }
@@ -173,13 +173,13 @@ export default function BioEditor() {
         <div className="space-y-12 pb-20">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-4xl font-light text-white mb-2">Bio &amp; <span className="font-medium">Profile</span></h1>
-                    <p className="text-white/40 text-sm font-light uppercase tracking-widest">Manage your personal details</p>
+                    <h1 className="text-4xl font-light text-stone-900 mb-2">Bio & <span className="font-medium">Profile</span></h1>
+                    <p className="text-stone-400 text-sm font-light uppercase tracking-widest">Manage your personal details</p>
                 </div>
                 <button
                     onClick={handleSave}
                     disabled={saving}
-                    className="flex items-center gap-2 px-8 py-3 rounded-full bg-white text-black text-sm font-medium hover:bg-white/90 transition-all active:scale-[0.98] disabled:opacity-50"
+                    className="flex items-center gap-2 px-8 py-3 rounded-full bg-stone-900 text-white text-sm font-medium hover:bg-stone-800 transition-all active:scale-[0.98] disabled:opacity-50"
                 >
                     {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                     Save Changes
@@ -190,15 +190,15 @@ export default function BioEditor() {
                 {/* Left Column: Photo & Statement */}
                 <div className="lg:col-span-2 space-y-12">
                     {/* Photo Upload */}
-                    <div className="p-8 rounded-3xl bg-white/5 border border-white/10 space-y-4">
-                        <label className="text-white/60 text-xs font-light tracking-wide uppercase">Profile Photo</label>
+                    <div className="p-8 rounded-3xl bg-white/60 backdrop-blur-md border border-black/[0.06] shadow-sm space-y-4">
+                        <label className="text-stone-600 text-xs font-light tracking-wide uppercase">Profile Photo</label>
                         <div className="flex flex-col md:flex-row gap-8 items-start">
-                            <div className="relative w-48 aspect-square rounded-2xl overflow-hidden bg-white/5 border border-white/10 group flex-shrink-0">
+                            <div className="relative w-48 aspect-square rounded-2xl overflow-hidden bg-white/40 border border-black/[0.08] group flex-shrink-0">
                                 {formData.photo_url ? (
                                     <Image src={formData.photo_url} alt="Profile" fill className="object-cover" unoptimized />
                                 ) : (
                                     <div className="w-full h-full flex items-center justify-center">
-                                        <ImageIcon className="w-12 h-12 text-white/10" />
+                                        <ImageIcon className="w-12 h-12 text-stone-300" />
                                     </div>
                                 )}
                                 <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -213,11 +213,11 @@ export default function BioEditor() {
                                 />
                             </div>
                             <div className="flex-1 space-y-3">
-                                <p className="text-white/40 text-sm font-light leading-relaxed">
+                                <p className="text-stone-500 text-sm font-light leading-relaxed">
                                     Upload a high-quality portrait photo. Recommended: 1000×1000px.
                                 </p>
                                 {uploading && (
-                                    <div className="flex items-center gap-2 text-white/60 text-xs">
+                                    <div className="flex items-center gap-2 text-stone-500 text-xs">
                                         <Loader2 className="w-3 h-3 animate-spin" />
                                         Uploading photo...
                                     </div>
@@ -236,13 +236,13 @@ export default function BioEditor() {
                     </div>
 
                     {/* Artist Statement */}
-                    <div className="p-8 rounded-3xl bg-white/5 border border-white/10 space-y-4">
-                        <label className="text-white/60 text-xs font-light tracking-wide uppercase">Artist Statement</label>
+                    <div className="p-8 rounded-3xl bg-white/60 backdrop-blur-md border border-black/[0.06] shadow-sm space-y-4">
+                        <label className="text-stone-600 text-xs font-light tracking-wide uppercase">Artist Statement</label>
                         <textarea
                             value={formData.statement}
                             onChange={(e) => setFormData(prev => ({ ...prev, statement: e.target.value }))}
                             rows={12}
-                            className="w-full px-6 py-5 rounded-2xl bg-white/5 border border-white/10 text-white text-base font-light leading-relaxed focus:outline-none focus:border-white/30 focus:bg-white/10 transition-all resize-none"
+                            className="w-full px-6 py-5 rounded-2xl bg-white/60 border border-black/[0.08] text-stone-900 text-base font-light leading-relaxed placeholder:text-stone-400 focus:outline-none focus:border-stone-400 focus:bg-white transition-all resize-none"
                             placeholder="Tell your story..."
                         />
                     </div>
@@ -251,22 +251,22 @@ export default function BioEditor() {
                 {/* Right Column: Exhibitions & Awards */}
                 <div className="space-y-12">
                     {/* Exhibitions */}
-                    <div className="p-8 rounded-3xl bg-white/5 border border-white/10 space-y-6">
+                    <div className="p-8 rounded-3xl bg-white/60 backdrop-blur-md border border-black/[0.06] shadow-sm space-y-6">
                         <div className="flex items-center justify-between">
-                            <label className="text-white/60 text-xs font-light tracking-wide uppercase">Exhibitions</label>
-                            <button onClick={addExhibition} className="p-1.5 rounded-full bg-white/5 border border-white/10 text-white/40 hover:text-white transition-all">
+                            <label className="text-stone-600 text-xs font-light tracking-wide uppercase">Exhibitions</label>
+                            <button onClick={addExhibition} className="p-1.5 rounded-full bg-white/60 border border-black/[0.08] text-stone-500 hover:text-stone-900 transition-all">
                                 <Plus className="w-3.5 h-3.5" />
                             </button>
                         </div>
                         <div className="space-y-6">
                             {formData.exhibitions.length === 0 && (
-                                <p className="text-white/20 text-xs font-light italic">No exhibitions yet. Click + to add one.</p>
+                                <p className="text-stone-400 text-xs font-light italic">No exhibitions yet. Click + to add one.</p>
                             )}
                             {formData.exhibitions.map((item, index) => (
-                                <div key={index} className="group space-y-2 p-4 rounded-xl bg-white/5 border border-white/5 relative">
+                                <div key={index} className="group space-y-2 p-4 rounded-xl bg-white/60 border border-black/[0.06] relative">
                                     <button
                                         onClick={() => removeExhibition(index)}
-                                        className="absolute top-3 right-3 p-1 text-red-400/40 hover:text-red-400 transition-colors"
+                                        className="absolute top-3 right-3 p-1 text-red-400/60 hover:text-red-500 transition-colors"
                                     >
                                         <Trash2 className="w-3.5 h-3.5" />
                                     </button>
@@ -274,7 +274,7 @@ export default function BioEditor() {
                                         type="text"
                                         value={item.title}
                                         onChange={(e) => updateExhibition(index, 'title', e.target.value)}
-                                        className="w-full bg-transparent border-b border-white/10 pb-1 text-sm font-light text-white focus:outline-none focus:border-white/40 transition-all"
+                                        className="w-full bg-transparent border-b border-black/[0.1] pb-1 text-sm font-light text-stone-900 focus:outline-none focus:border-stone-400 transition-all"
                                         placeholder="Exhibition Title"
                                     />
                                     <div className="grid grid-cols-2 gap-2 pt-1">
@@ -282,14 +282,14 @@ export default function BioEditor() {
                                             type="text"
                                             value={item.year}
                                             onChange={(e) => updateExhibition(index, 'year', e.target.value)}
-                                            className="w-full bg-transparent border-b border-white/10 pb-1 text-xs font-light text-white/60 focus:outline-none focus:border-white/40 transition-all"
+                                            className="w-full bg-transparent border-b border-black/[0.1] pb-1 text-xs font-light text-stone-600 focus:outline-none focus:border-stone-400 transition-all"
                                             placeholder="Year (e.g. 2025)"
                                         />
                                         <input
                                             type="text"
                                             value={item.location}
                                             onChange={(e) => updateExhibition(index, 'location', e.target.value)}
-                                            className="w-full bg-transparent border-b border-white/10 pb-1 text-xs font-light text-white/60 focus:outline-none focus:border-white/40 transition-all"
+                                            className="w-full bg-transparent border-b border-black/[0.1] pb-1 text-xs font-light text-stone-600 focus:outline-none focus:border-stone-400 transition-all"
                                             placeholder="Location / City"
                                         />
                                     </div>
@@ -299,22 +299,22 @@ export default function BioEditor() {
                     </div>
 
                     {/* Awards */}
-                    <div className="p-8 rounded-3xl bg-white/5 border border-white/10 space-y-6">
+                    <div className="p-8 rounded-3xl bg-white/60 backdrop-blur-md border border-black/[0.06] shadow-sm space-y-6">
                         <div className="flex items-center justify-between">
-                            <label className="text-white/60 text-xs font-light tracking-wide uppercase">Awards</label>
-                            <button onClick={addAward} className="p-1.5 rounded-full bg-white/5 border border-white/10 text-white/40 hover:text-white transition-all">
+                            <label className="text-stone-600 text-xs font-light tracking-wide uppercase">Awards</label>
+                            <button onClick={addAward} className="p-1.5 rounded-full bg-white/60 border border-black/[0.08] text-stone-500 hover:text-stone-900 transition-all">
                                 <Plus className="w-3.5 h-3.5" />
                             </button>
                         </div>
                         <div className="space-y-6">
                             {formData.awards.length === 0 && (
-                                <p className="text-white/20 text-xs font-light italic">No awards yet. Click + to add one.</p>
+                                <p className="text-stone-400 text-xs font-light italic">No awards yet. Click + to add one.</p>
                             )}
                             {formData.awards.map((item, index) => (
-                                <div key={index} className="group space-y-2 p-4 rounded-xl bg-white/5 border border-white/5 relative">
+                                <div key={index} className="group space-y-2 p-4 rounded-xl bg-white/60 border border-black/[0.06] relative">
                                     <button
                                         onClick={() => removeAward(index)}
-                                        className="absolute top-3 right-3 p-1 text-red-400/40 hover:text-red-400 transition-colors"
+                                        className="absolute top-3 right-3 p-1 text-red-400/60 hover:text-red-500 transition-colors"
                                     >
                                         <Trash2 className="w-3.5 h-3.5" />
                                     </button>
@@ -322,7 +322,7 @@ export default function BioEditor() {
                                         type="text"
                                         value={item.title}
                                         onChange={(e) => updateAward(index, 'title', e.target.value)}
-                                        className="w-full bg-transparent border-b border-white/10 pb-1 text-sm font-light text-white focus:outline-none focus:border-white/40 transition-all"
+                                        className="w-full bg-transparent border-b border-black/[0.1] pb-1 text-sm font-light text-stone-900 focus:outline-none focus:border-stone-400 transition-all"
                                         placeholder="Award Title"
                                     />
                                     <div className="grid grid-cols-2 gap-2 pt-1">
@@ -330,14 +330,14 @@ export default function BioEditor() {
                                             type="text"
                                             value={item.year}
                                             onChange={(e) => updateAward(index, 'year', e.target.value)}
-                                            className="w-full bg-transparent border-b border-white/10 pb-1 text-xs font-light text-white/60 focus:outline-none focus:border-white/40 transition-all"
+                                            className="w-full bg-transparent border-b border-black/[0.1] pb-1 text-xs font-light text-stone-600 focus:outline-none focus:border-stone-400 transition-all"
                                             placeholder="Year (e.g. 2024)"
                                         />
                                         <input
                                             type="text"
                                             value={item.location}
                                             onChange={(e) => updateAward(index, 'location', e.target.value)}
-                                            className="w-full bg-transparent border-b border-white/10 pb-1 text-xs font-light text-white/60 focus:outline-none focus:border-white/40 transition-all"
+                                            className="w-full bg-transparent border-b border-black/[0.1] pb-1 text-xs font-light text-stone-600 focus:outline-none focus:border-stone-400 transition-all"
                                             placeholder="Organization / City"
                                         />
                                     </div>

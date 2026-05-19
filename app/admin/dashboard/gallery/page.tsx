@@ -317,8 +317,8 @@ export default function GalleryManager() {
         <div className="space-y-12">
             <div className="flex items-center justify-between flex-wrap gap-4">
                 <div>
-                    <h1 className="text-4xl font-light text-white mb-2">Gallery <span className="font-medium">Manager</span></h1>
-                    <p className="text-white/40 text-sm font-light uppercase tracking-widest">Manage your artwork collection</p>
+                    <h1 className="text-4xl font-light text-stone-900 mb-2">Gallery <span className="font-medium">Manager</span></h1>
+                    <p className="text-stone-400 text-sm font-light uppercase tracking-widest">Manage your artwork collection</p>
                 </div>
                 <div className="flex items-center gap-3">
                     {!isAdding && artworks.length > 1 && (
@@ -327,8 +327,8 @@ export default function GalleryManager() {
                                 onClick={() => setIsReordering(!isReordering)}
                                 className={`flex items-center gap-2 px-5 py-3 rounded-full text-sm font-medium transition-all active:scale-[0.98] ${
                                     isReordering 
-                                        ? 'bg-white/20 text-white border border-white/30' 
-                                        : 'bg-white/10 text-white/70 border border-white/10 hover:bg-white/15 hover:text-white'
+                                        ? 'bg-stone-900 text-white border border-stone-900' 
+                                        : 'bg-white/60 text-stone-700 border border-black/[0.08] hover:bg-white hover:text-stone-900'
                                 }`}
                             >
                                 <GripVertical className="w-4 h-4" />
@@ -336,7 +336,7 @@ export default function GalleryManager() {
                             </button>
                             <button
                                 onClick={handleSortByYear}
-                                className="flex items-center gap-2 px-5 py-3 rounded-full bg-white/10 text-white/70 border border-white/10 text-sm font-medium hover:bg-white/15 hover:text-white transition-all active:scale-[0.98]"
+                                className="flex items-center gap-2 px-5 py-3 rounded-full bg-white/60 text-stone-700 border border-black/[0.08] text-sm font-medium hover:bg-white hover:text-stone-900 transition-all active:scale-[0.98]"
                             >
                                 <ArrowUpDown className="w-4 h-4" />
                                 Sort by Year
@@ -346,7 +346,7 @@ export default function GalleryManager() {
                     {!isAdding && (
                         <button
                             onClick={() => setIsAdding(true)}
-                            className="flex items-center gap-2 px-6 py-3 rounded-full bg-white text-black text-sm font-medium hover:bg-white/90 transition-all active:scale-[0.98]"
+                            className="flex items-center gap-2 px-6 py-3 rounded-full bg-stone-900 text-white text-sm font-medium hover:bg-stone-800 transition-all active:scale-[0.98]"
                         >
                             <Plus className="w-4 h-4" />
                             Add New Artwork
@@ -363,11 +363,11 @@ export default function GalleryManager() {
                         exit={{ opacity: 0, height: 0 }}
                         className="overflow-hidden"
                     >
-                        <form onSubmit={handleSubmit} className="p-8 rounded-3xl bg-white/5 border border-white/10 space-y-8 mb-12 relative">
+                        <form onSubmit={handleSubmit} className="p-8 rounded-3xl bg-white/60 backdrop-blur-md border border-black/[0.06] shadow-sm space-y-8 mb-12 relative">
                             <button 
                                 type="button" 
                                 onClick={resetForm}
-                                className="absolute top-6 right-6 p-2 rounded-full hover:bg-white/10 text-white/40 transition-colors"
+                                className="absolute top-6 right-6 p-2 rounded-full hover:bg-black/[0.06] text-stone-400 transition-colors"
                             >
                                 <X className="w-5 h-5" />
                             </button>
@@ -375,8 +375,8 @@ export default function GalleryManager() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                                 {/* Image Upload */}
                                 <div className="space-y-4">
-                                    <label className="text-white/60 text-xs font-light tracking-wide uppercase">Artwork Image</label>
-                                    <div className="relative aspect-square rounded-2xl bg-white/5 border border-dashed border-white/20 flex flex-col items-center justify-center overflow-hidden group">
+                                    <label className="text-stone-600 text-xs font-light tracking-wide uppercase">Artwork Image</label>
+                                    <div className="relative aspect-square rounded-2xl bg-white/40 border border-dashed border-black/[0.1] flex flex-col items-center justify-center overflow-hidden group">
                                         {formData.image_url ? (
                                             <>
                                                 <Image 
@@ -392,12 +392,12 @@ export default function GalleryManager() {
                                         ) : (
                                             <div className="text-center p-8">
                                                 {uploading ? (
-                                                    <Loader2 className="w-8 h-8 text-white/40 animate-spin mx-auto mb-2" />
+                                                    <Loader2 className="w-8 h-8 text-stone-300 animate-spin mx-auto mb-2" />
                                                 ) : (
-                                                    <Upload className="w-8 h-8 text-white/40 mx-auto mb-2" />
+                                                    <Upload className="w-8 h-8 text-stone-300 mx-auto mb-2" />
                                                 )}
-                                                <p className="text-white/40 text-xs font-light">Click to upload or drag and drop</p>
-                                                <p className="text-white/20 text-[10px] uppercase mt-2">JPG, PNG, WebP (Max 5MB)</p>
+                                                <p className="text-stone-400 text-xs font-light">Click to upload or drag and drop</p>
+                                                <p className="text-stone-300 text-[10px] uppercase mt-2">JPG, PNG, WebP (Max 5MB)</p>
                                             </div>
                                         )}
                                         <input 
@@ -413,14 +413,14 @@ export default function GalleryManager() {
                                     {formData.image_url && (
                                         <div className="space-y-4 mt-6">
                                             <div className="flex items-center justify-between">
-                                                <label className="text-white/60 text-xs font-light tracking-wide uppercase flex items-center gap-2">
+                                                <label className="text-stone-600 text-xs font-light tracking-wide uppercase flex items-center gap-2">
                                                     <Crosshair className="w-3.5 h-3.5" />
                                                     Preview Positioning
                                                 </label>
                                                 <button
                                                     type="button"
                                                     onClick={() => setFormData(prev => ({ ...prev, preview_position_x: 50, preview_position_y: 50 }))}
-                                                    className="flex items-center gap-1.5 text-white/30 hover:text-white/60 text-[10px] uppercase tracking-widest transition-colors"
+                                                    className="flex items-center gap-1.5 text-stone-400 hover:text-stone-700 text-[10px] uppercase tracking-widest transition-colors"
                                                 >
                                                     <RotateCcw className="w-3 h-3" />
                                                     Reset
@@ -433,7 +433,7 @@ export default function GalleryManager() {
                                                 onPointerDown={handlePointerDown}
                                                 onPointerMove={handlePointerMove}
                                                 onPointerUp={handlePointerUp}
-                                                className="relative aspect-square rounded-xl overflow-hidden cursor-crosshair border border-white/10 select-none touch-none"
+                                                className="relative aspect-square rounded-xl overflow-hidden cursor-crosshair border border-black/[0.08] select-none touch-none"
                                             >
                                                 <Image
                                                     src={formData.image_url}
@@ -473,8 +473,8 @@ export default function GalleryManager() {
                                             <div className="grid grid-cols-2 gap-4">
                                                 <div className="space-y-2">
                                                     <div className="flex items-center justify-between">
-                                                        <span className="text-white/40 text-[10px] uppercase tracking-widest">Horizontal</span>
-                                                        <span className="text-white/60 text-[10px] font-mono">{formData.preview_position_x}%</span>
+                                                        <span className="text-stone-400 text-[10px] uppercase tracking-widest">Horizontal</span>
+                                                        <span className="text-stone-600 text-[10px] font-mono">{formData.preview_position_x}%</span>
                                                     </div>
                                                     <Slider
                                                         value={[formData.preview_position_x]}
@@ -487,8 +487,8 @@ export default function GalleryManager() {
                                                 </div>
                                                 <div className="space-y-2">
                                                     <div className="flex items-center justify-between">
-                                                        <span className="text-white/40 text-[10px] uppercase tracking-widest">Vertical</span>
-                                                        <span className="text-white/60 text-[10px] font-mono">{formData.preview_position_y}%</span>
+                                                        <span className="text-stone-400 text-[10px] uppercase tracking-widest">Vertical</span>
+                                                        <span className="text-stone-600 text-[10px] font-mono">{formData.preview_position_y}%</span>
                                                     </div>
                                                     <Slider
                                                         value={[formData.preview_position_y]}
@@ -507,55 +507,55 @@ export default function GalleryManager() {
                                 {/* Form Fields */}
                                 <div className="space-y-6">
                                     <div className="space-y-2">
-                                        <label className="text-white/60 text-xs font-light tracking-wide uppercase">Title</label>
+                                        <label className="text-stone-600 text-xs font-light tracking-wide uppercase">Title</label>
                                         <input
                                             type="text"
                                             value={formData.title}
                                             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                                             required
-                                            className="w-full px-5 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm font-light focus:outline-none focus:border-white/30 focus:bg-white/10 transition-all"
+                                            className="w-full px-5 py-3 rounded-xl bg-white/60 border border-black/[0.08] text-stone-900 text-sm font-light placeholder:text-stone-400 focus:outline-none focus:border-stone-400 focus:bg-white transition-all"
                                             placeholder="Artpiece Name"
                                         />
                                     </div>
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="space-y-2">
-                                            <label className="text-white/60 text-xs font-light tracking-wide uppercase">Year</label>
-                                            <input
+                                            <label className="text-stone-600 text-xs font-light tracking-wide uppercase">Year</label>
+                                             <input
                                                 type="text"
                                                 value={formData.year}
                                                 onChange={(e) => setFormData({ ...formData, year: e.target.value })}
                                                 required
-                                                className="w-full px-5 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm font-light focus:outline-none focus:border-white/30 focus:bg-white/10 transition-all"
+                                                className="w-full px-5 py-3 rounded-xl bg-white/60 border border-black/[0.08] text-stone-900 text-sm font-light placeholder:text-stone-400 focus:outline-none focus:border-stone-400 focus:bg-white transition-all"
                                                 placeholder="2025"
                                             />
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-white/60 text-xs font-light tracking-wide uppercase">Medium</label>
+                                            <label className="text-stone-600 text-xs font-light tracking-wide uppercase">Medium</label>
                                             <input
                                                 type="text"
                                                 value={formData.medium}
                                                 onChange={(e) => setFormData({ ...formData, medium: e.target.value })}
                                                 required
-                                                className="w-full px-5 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm font-light focus:outline-none focus:border-white/30 focus:bg-white/10 transition-all"
+                                                className="w-full px-5 py-3 rounded-xl bg-white/60 border border-black/[0.08] text-stone-900 text-sm font-light placeholder:text-stone-400 focus:outline-none focus:border-stone-400 focus:bg-white transition-all"
                                                 placeholder="Oil on Canvas"
                                             />
                                         </div>
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-white/60 text-xs font-light tracking-wide uppercase">Description</label>
+                                        <label className="text-stone-600 text-xs font-light tracking-wide uppercase">Description</label>
                                         <textarea
                                             value={formData.description}
                                             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                             required
                                             rows={4}
-                                            className="w-full px-5 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm font-light focus:outline-none focus:border-white/30 focus:bg-white/10 transition-all resize-none"
+                                            className="w-full px-5 py-3 rounded-xl bg-white/60 border border-black/[0.08] text-stone-900 text-sm font-light placeholder:text-stone-400 focus:outline-none focus:border-stone-400 focus:bg-white transition-all resize-none"
                                             placeholder="Tell the story behind this piece..."
                                         />
                                     </div>
                                     <button
                                         type="submit"
                                         disabled={saving || uploading || !formData.image_url}
-                                        className="w-full py-4 rounded-xl bg-white text-black text-sm font-medium hover:bg-white/90 active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                                        className="w-full py-4 rounded-xl bg-stone-900 text-white text-sm font-medium hover:bg-stone-800 active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
                                     >
                                         {saving && <Loader2 className="w-4 h-4 animate-spin" />}
                                         {isEditing ? "Update Artwork" : "Save Artwork"}
@@ -570,7 +570,7 @@ export default function GalleryManager() {
             {/* Artworks List */}
             {loading && artworks.length === 0 ? (
                 <div className="flex justify-center py-20">
-                    <Loader2 className="w-8 h-8 text-white/20 animate-spin" />
+                    <Loader2 className="w-8 h-8 text-stone-300 animate-spin" />
                 </div>
             ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -582,15 +582,15 @@ export default function GalleryManager() {
                             onDragStart={() => handleDragStart(index)}
                             onDragOver={(e: React.DragEvent) => handleDragOver(e, index)}
                             onDragEnd={handleDragEnd}
-                            className={`group relative rounded-2xl bg-white/5 border overflow-hidden transition-all duration-300 ${
+                            className={`group relative rounded-2xl bg-white/50 backdrop-blur-md border shadow-sm overflow-hidden transition-all duration-300 ${
                                 isReordering 
-                                    ? 'cursor-grab active:cursor-grabbing border-white/20 hover:border-white/40' 
-                                    : 'border-white/10 hover:border-white/30'
+                                    ? 'cursor-grab active:cursor-grabbing border-black/[0.10] hover:border-black/[0.18]' 
+                                    : 'border-black/[0.06] hover:border-black/[0.12]'
                             } ${
-                                dragOverIndex === index ? 'ring-2 ring-white/40 scale-[1.02]' : ''
+                                dragOverIndex === index ? 'ring-2 ring-stone-400 scale-[1.02]' : ''
                             } ${
                                 draggedIndex === index ? 'opacity-50' : ''
-                            }`}
+                            }`
                         >
                             {/* Reorder controls */}
                             {isReordering && (
@@ -613,9 +613,9 @@ export default function GalleryManager() {
                             )}
                             {isReordering && (
                                 <div className="absolute top-3 left-3 z-20">
-                                    <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-black/60 backdrop-blur-sm border border-white/10">
-                                        <GripVertical className="w-3.5 h-3.5 text-white/50" />
-                                        <span className="text-white/60 text-[10px] font-mono">#{index + 1}</span>
+                                    <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-white/80 backdrop-blur-sm border border-black/[0.06]">
+                                        <GripVertical className="w-3.5 h-3.5 text-stone-400" />
+                                        <span className="text-stone-600 text-[10px] font-mono">#{index + 1}</span>
                                     </div>
                                 </div>
                             )}
@@ -646,15 +646,15 @@ export default function GalleryManager() {
                                 )}
                             </div>
                             <div className="p-4">
-                                <h3 className="text-white font-medium truncate">{artwork.title}</h3>
-                                <p className="text-white/40 text-[10px] uppercase tracking-widest mt-1">{artwork.medium}, {artwork.year}</p>
+                                <h3 className="text-stone-900 font-medium truncate">{artwork.title}</h3>
+                                <p className="text-stone-400 text-[10px] uppercase tracking-widest mt-1">{artwork.medium}, {artwork.year}</p>
                             </div>
                         </motion.div>
                     ))}
                     {artworks.length === 0 && !isAdding && (
-                        <div className="col-span-full py-20 text-center border border-dashed border-white/10 rounded-3xl">
-                            <ImageIcon className="w-12 h-12 text-white/10 mx-auto mb-4" />
-                            <p className="text-white/40 font-light">Your gallery is empty. Add your first artwork above.</p>
+                        <div className="col-span-full py-20 text-center border border-dashed border-black/[0.08] rounded-3xl bg-white/20">
+                            <ImageIcon className="w-12 h-12 text-stone-300 mx-auto mb-4" />
+                            <p className="text-stone-400 font-light">Your gallery is empty. Add your first artwork above.</p>
                         </div>
                     )}
                 </div>
