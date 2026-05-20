@@ -119,7 +119,7 @@ export default function GalleryManager() {
 
         setUploading(true)
         const fileExt = file.name.split('.').pop()
-        const fileName = `${Date.now()}.${fileExt}`
+        const fileName = `artwork-${Date.now()}.${fileExt}`
 
         const uploadForm = new FormData()
         uploadForm.append('file', file)
