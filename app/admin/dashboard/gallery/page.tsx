@@ -590,7 +590,7 @@ export default function GalleryManager() {
                                 dragOverIndex === index ? 'ring-2 ring-stone-400 scale-[1.02]' : ''
                             } ${
                                 draggedIndex === index ? 'opacity-50' : ''
-                            }`
+                            }`}
                         >
                             {/* Reorder controls */}
                             {isReordering && (
