@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { Reorder, useDragControls } from "framer-motion"
 import { supabase } from "@/lib/supabase"
 import { 
     Loader2, 
@@ -8,7 +9,8 @@ import {
     Plus,
     Trash2,
     Save,
-    Image as ImageIcon
+    Image as ImageIcon,
+    GripVertical
 } from "lucide-react"
 import Image from "next/image"
 import { toast } from "sonner"
@@ -24,6 +26,146 @@ interface AwardEntry {
     year: string
     location: string
 }
+
+// ─── Draggable sub-components ────────────────────────────────────────────────
+
+function ExhibitionCard({
+    item,
+    index,
+    onUpdate,
+    onRemove,
+}: {
+    item: ExhibitionEntry
+    index: number
+    onUpdate: (index: number, field: keyof ExhibitionEntry, value: string) => void
+    onRemove: (index: number) => void
+}) {
+    const controls = useDragControls()
+
+    return (
+        <Reorder.Item
+            value={item}
+            dragListener={false}
+            dragControls={controls}
+            className="flex items-start gap-2 p-4 rounded-xl bg-white/60 border border-black/[0.06] relative"
+            style={{ listStyle: "none" }}
+        >
+            {/* Grip handle — only this initiates drag */}
+            <div
+                onPointerDown={(e) => {
+                    e.preventDefault()
+                    controls.start(e)
+                }}
+                className="mt-0.5 flex-shrink-0 cursor-grab active:cursor-grabbing text-stone-300 hover:text-stone-500 transition-colors touch-none select-none"
+            >
+                <GripVertical className="w-3.5 h-3.5" />
+            </div>
+
+            {/* Fields */}
+            <div className="flex-1 space-y-2 min-w-0">
+                <button
+                    onClick={() => onRemove(index)}
+                    className="absolute top-3 right-3 p-1 text-red-400/60 hover:text-red-500 transition-colors"
+                >
+                    <Trash2 className="w-3.5 h-3.5" />
+                </button>
+                <input
+                    type="text"
+                    value={item.title}
+                    onChange={(e) => onUpdate(index, "title", e.target.value)}
+                    className="w-full bg-transparent border-b border-black/[0.1] pb-1 text-sm font-light text-stone-900 focus:outline-none focus:border-stone-400 transition-all pr-6"
+                    placeholder="Exhibition Title"
+                />
+                <div className="grid grid-cols-2 gap-2 pt-1">
+                    <input
+                        type="text"
+                        value={item.year}
+                        onChange={(e) => onUpdate(index, "year", e.target.value)}
+                        className="w-full bg-transparent border-b border-black/[0.1] pb-1 text-xs font-light text-stone-600 focus:outline-none focus:border-stone-400 transition-all"
+                        placeholder="Year (e.g. 2025)"
+                    />
+                    <input
+                        type="text"
+                        value={item.location}
+                        onChange={(e) => onUpdate(index, "location", e.target.value)}
+                        className="w-full bg-transparent border-b border-black/[0.1] pb-1 text-xs font-light text-stone-600 focus:outline-none focus:border-stone-400 transition-all"
+                        placeholder="Location / City"
+                    />
+                </div>
+            </div>
+        </Reorder.Item>
+    )
+}
+
+function AwardCard({
+    item,
+    index,
+    onUpdate,
+    onRemove,
+}: {
+    item: AwardEntry
+    index: number
+    onUpdate: (index: number, field: keyof AwardEntry, value: string) => void
+    onRemove: (index: number) => void
+}) {
+    const controls = useDragControls()
+
+    return (
+        <Reorder.Item
+            value={item}
+            dragListener={false}
+            dragControls={controls}
+            className="flex items-start gap-2 p-4 rounded-xl bg-white/60 border border-black/[0.06] relative"
+            style={{ listStyle: "none" }}
+        >
+            {/* Grip handle */}
+            <div
+                onPointerDown={(e) => {
+                    e.preventDefault()
+                    controls.start(e)
+                }}
+                className="mt-0.5 flex-shrink-0 cursor-grab active:cursor-grabbing text-stone-300 hover:text-stone-500 transition-colors touch-none select-none"
+            >
+                <GripVertical className="w-3.5 h-3.5" />
+            </div>
+
+            {/* Fields */}
+            <div className="flex-1 space-y-2 min-w-0">
+                <button
+                    onClick={() => onRemove(index)}
+                    className="absolute top-3 right-3 p-1 text-red-400/60 hover:text-red-500 transition-colors"
+                >
+                    <Trash2 className="w-3.5 h-3.5" />
+                </button>
+                <input
+                    type="text"
+                    value={item.title}
+                    onChange={(e) => onUpdate(index, "title", e.target.value)}
+                    className="w-full bg-transparent border-b border-black/[0.1] pb-1 text-sm font-light text-stone-900 focus:outline-none focus:border-stone-400 transition-all pr-6"
+                    placeholder="Award Title"
+                />
+                <div className="grid grid-cols-2 gap-2 pt-1">
+                    <input
+                        type="text"
+                        value={item.year}
+                        onChange={(e) => onUpdate(index, "year", e.target.value)}
+                        className="w-full bg-transparent border-b border-black/[0.1] pb-1 text-xs font-light text-stone-600 focus:outline-none focus:border-stone-400 transition-all"
+                        placeholder="Year (e.g. 2024)"
+                    />
+                    <input
+                        type="text"
+                        value={item.location}
+                        onChange={(e) => onUpdate(index, "location", e.target.value)}
+                        className="w-full bg-transparent border-b border-black/[0.1] pb-1 text-xs font-light text-stone-600 focus:outline-none focus:border-stone-400 transition-all"
+                        placeholder="Organization / City"
+                    />
+                </div>
+            </div>
+        </Reorder.Item>
+    )
+}
+
+// ─── Main page ────────────────────────────────────────────────────────────────
 
 export default function BioEditor() {
     const [loading, setLoading] = useState(true)
@@ -49,7 +191,6 @@ export default function BioEditor() {
             .maybeSingle()
         
         if (data) {
-            // Normalize: handle both old string[] and new object[] formats
             const normalizeEntries = (arr: any[]): ExhibitionEntry[] =>
                 (arr || []).map(item =>
                     typeof item === 'string'
@@ -214,7 +355,7 @@ export default function BioEditor() {
                             </div>
                             <div className="flex-1 space-y-3">
                                 <p className="text-stone-500 text-sm font-light leading-relaxed">
-                                    Upload a high-quality portrait photo. Recommended: 1000×1000px.
+                                    Upload a high-quality portrait photo. Recommended: 1000x1000px.
                                 </p>
                                 {uploading && (
                                     <div className="flex items-center gap-2 text-stone-500 text-xs">
@@ -258,44 +399,25 @@ export default function BioEditor() {
                                 <Plus className="w-3.5 h-3.5" />
                             </button>
                         </div>
-                        <div className="space-y-6">
-                            {formData.exhibitions.length === 0 && (
-                                <p className="text-stone-400 text-xs font-light italic">No exhibitions yet. Click + to add one.</p>
-                            )}
+                        {formData.exhibitions.length === 0 && (
+                            <p className="text-stone-400 text-xs font-light italic">No exhibitions yet. Click + to add one.</p>
+                        )}
+                        <Reorder.Group
+                            axis="y"
+                            values={formData.exhibitions}
+                            onReorder={(newOrder) => setFormData(prev => ({ ...prev, exhibitions: newOrder }))}
+                            className="space-y-3"
+                        >
                             {formData.exhibitions.map((item, index) => (
-                                <div key={index} className="group space-y-2 p-4 rounded-xl bg-white/60 border border-black/[0.06] relative">
-                                    <button
-                                        onClick={() => removeExhibition(index)}
-                                        className="absolute top-3 right-3 p-1 text-red-400/60 hover:text-red-500 transition-colors"
-                                    >
-                                        <Trash2 className="w-3.5 h-3.5" />
-                                    </button>
-                                    <input
-                                        type="text"
-                                        value={item.title}
-                                        onChange={(e) => updateExhibition(index, 'title', e.target.value)}
-                                        className="w-full bg-transparent border-b border-black/[0.1] pb-1 text-sm font-light text-stone-900 focus:outline-none focus:border-stone-400 transition-all"
-                                        placeholder="Exhibition Title"
-                                    />
-                                    <div className="grid grid-cols-2 gap-2 pt-1">
-                                        <input
-                                            type="text"
-                                            value={item.year}
-                                            onChange={(e) => updateExhibition(index, 'year', e.target.value)}
-                                            className="w-full bg-transparent border-b border-black/[0.1] pb-1 text-xs font-light text-stone-600 focus:outline-none focus:border-stone-400 transition-all"
-                                            placeholder="Year (e.g. 2025)"
-                                        />
-                                        <input
-                                            type="text"
-                                            value={item.location}
-                                            onChange={(e) => updateExhibition(index, 'location', e.target.value)}
-                                            className="w-full bg-transparent border-b border-black/[0.1] pb-1 text-xs font-light text-stone-600 focus:outline-none focus:border-stone-400 transition-all"
-                                            placeholder="Location / City"
-                                        />
-                                    </div>
-                                </div>
+                                <ExhibitionCard
+                                    key={item.title + "-" + index}
+                                    item={item}
+                                    index={index}
+                                    onUpdate={updateExhibition}
+                                    onRemove={removeExhibition}
+                                />
                             ))}
-                        </div>
+                        </Reorder.Group>
                     </div>
 
                     {/* Awards */}
@@ -306,44 +428,25 @@ export default function BioEditor() {
                                 <Plus className="w-3.5 h-3.5" />
                             </button>
                         </div>
-                        <div className="space-y-6">
-                            {formData.awards.length === 0 && (
-                                <p className="text-stone-400 text-xs font-light italic">No awards yet. Click + to add one.</p>
-                            )}
+                        {formData.awards.length === 0 && (
+                            <p className="text-stone-400 text-xs font-light italic">No awards yet. Click + to add one.</p>
+                        )}
+                        <Reorder.Group
+                            axis="y"
+                            values={formData.awards}
+                            onReorder={(newOrder) => setFormData(prev => ({ ...prev, awards: newOrder }))}
+                            className="space-y-3"
+                        >
                             {formData.awards.map((item, index) => (
-                                <div key={index} className="group space-y-2 p-4 rounded-xl bg-white/60 border border-black/[0.06] relative">
-                                    <button
-                                        onClick={() => removeAward(index)}
-                                        className="absolute top-3 right-3 p-1 text-red-400/60 hover:text-red-500 transition-colors"
-                                    >
-                                        <Trash2 className="w-3.5 h-3.5" />
-                                    </button>
-                                    <input
-                                        type="text"
-                                        value={item.title}
-                                        onChange={(e) => updateAward(index, 'title', e.target.value)}
-                                        className="w-full bg-transparent border-b border-black/[0.1] pb-1 text-sm font-light text-stone-900 focus:outline-none focus:border-stone-400 transition-all"
-                                        placeholder="Award Title"
-                                    />
-                                    <div className="grid grid-cols-2 gap-2 pt-1">
-                                        <input
-                                            type="text"
-                                            value={item.year}
-                                            onChange={(e) => updateAward(index, 'year', e.target.value)}
-                                            className="w-full bg-transparent border-b border-black/[0.1] pb-1 text-xs font-light text-stone-600 focus:outline-none focus:border-stone-400 transition-all"
-                                            placeholder="Year (e.g. 2024)"
-                                        />
-                                        <input
-                                            type="text"
-                                            value={item.location}
-                                            onChange={(e) => updateAward(index, 'location', e.target.value)}
-                                            className="w-full bg-transparent border-b border-black/[0.1] pb-1 text-xs font-light text-stone-600 focus:outline-none focus:border-stone-400 transition-all"
-                                            placeholder="Organization / City"
-                                        />
-                                    </div>
-                                </div>
+                                <AwardCard
+                                    key={item.title + "-" + index}
+                                    item={item}
+                                    index={index}
+                                    onUpdate={updateAward}
+                                    onRemove={removeAward}
+                                />
                             ))}
-                        </div>
+                        </Reorder.Group>
                     </div>
                 </div>
             </div>
