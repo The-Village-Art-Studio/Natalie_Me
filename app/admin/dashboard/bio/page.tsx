@@ -1,10 +1,10 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Reorder, useDragControls } from "framer-motion"
+import { Reorder, useDragControls, motion } from "framer-motion"
 import { supabase } from "@/lib/supabase"
-import { 
-    Loader2, 
+import {
+    Loader2,
     Upload,
     Plus,
     Trash2,
@@ -15,19 +15,32 @@ import {
 import Image from "next/image"
 import { toast } from "sonner"
 
+// Each entry carries a stable `id` so Reorder can track items unambiguously
 interface ExhibitionEntry {
+    id: string
     title: string
     year: string
     location: string
 }
 
 interface AwardEntry {
+    id: string
     title: string
     year: string
     location: string
 }
 
-// ─── Draggable sub-components ────────────────────────────────────────────────
+const uid = () => Math.random().toString(36).slice(2)
+
+// Normalize DB rows (which may not have an `id`) into typed entries
+const normalizeEntries = (arr: any[]): ExhibitionEntry[] =>
+    (arr || []).map((item) =>
+        typeof item === "string"
+            ? { id: uid(), title: item, year: "", location: "" }
+            : { id: item.id ?? uid(), title: item.title ?? "", year: item.year ?? "", location: item.location ?? "" }
+    )
+
+// ─── Draggable card components ────────────────────────────────────────────────
 
 function ExhibitionCard({
     item,
@@ -47,21 +60,21 @@ function ExhibitionCard({
             value={item}
             dragListener={false}
             dragControls={controls}
-            className="flex items-start gap-2 p-4 rounded-xl bg-white/60 border border-black/[0.06] relative"
             style={{ listStyle: "none" }}
+            whileDrag={{ scale: 1.02, boxShadow: "0 8px 24px rgba(0,0,0,0.08)" }}
+            transition={{ duration: 0 }}
+            className="flex items-start gap-2 p-4 rounded-xl bg-white border border-black/[0.06] relative select-none"
         >
-            {/* Grip handle — only this initiates drag */}
             <div
                 onPointerDown={(e) => {
                     e.preventDefault()
                     controls.start(e)
                 }}
-                className="mt-0.5 flex-shrink-0 cursor-grab active:cursor-grabbing text-stone-300 hover:text-stone-500 transition-colors touch-none select-none"
+                className="mt-0.5 flex-shrink-0 cursor-grab active:cursor-grabbing text-stone-300 hover:text-stone-500 transition-colors touch-none"
             >
                 <GripVertical className="w-3.5 h-3.5" />
             </div>
 
-            {/* Fields */}
             <div className="flex-1 space-y-2 min-w-0">
                 <button
                     onClick={() => onRemove(index)}
@@ -115,21 +128,21 @@ function AwardCard({
             value={item}
             dragListener={false}
             dragControls={controls}
-            className="flex items-start gap-2 p-4 rounded-xl bg-white/60 border border-black/[0.06] relative"
             style={{ listStyle: "none" }}
+            whileDrag={{ scale: 1.02, boxShadow: "0 8px 24px rgba(0,0,0,0.08)" }}
+            transition={{ duration: 0 }}
+            className="flex items-start gap-2 p-4 rounded-xl bg-white border border-black/[0.06] relative select-none"
         >
-            {/* Grip handle */}
             <div
                 onPointerDown={(e) => {
                     e.preventDefault()
                     controls.start(e)
                 }}
-                className="mt-0.5 flex-shrink-0 cursor-grab active:cursor-grabbing text-stone-300 hover:text-stone-500 transition-colors touch-none select-none"
+                className="mt-0.5 flex-shrink-0 cursor-grab active:cursor-grabbing text-stone-300 hover:text-stone-500 transition-colors touch-none"
             >
                 <GripVertical className="w-3.5 h-3.5" />
             </div>
 
-            {/* Fields */}
             <div className="flex-1 space-y-2 min-w-0">
                 <button
                     onClick={() => onRemove(index)}
@@ -171,12 +184,12 @@ export default function BioEditor() {
     const [loading, setLoading] = useState(true)
     const [saving, setSaving] = useState(false)
     const [uploading, setUploading] = useState(false)
-    
+
     const [formData, setFormData] = useState({
         statement: "",
         photo_url: "",
         exhibitions: [] as ExhibitionEntry[],
-        awards: [] as AwardEntry[]
+        awards: [] as AwardEntry[],
     })
 
     useEffect(() => {
@@ -185,24 +198,13 @@ export default function BioEditor() {
 
     const fetchBio = async () => {
         setLoading(true)
-        const { data } = await supabase
-            .from('bio')
-            .select('*')
-            .maybeSingle()
-        
+        const { data } = await supabase.from("bio").select("*").maybeSingle()
         if (data) {
-            const normalizeEntries = (arr: any[]): ExhibitionEntry[] =>
-                (arr || []).map(item =>
-                    typeof item === 'string'
-                        ? { title: item, year: '', location: '' }
-                        : item
-                )
-
             setFormData({
                 statement: data.statement || "",
                 photo_url: data.photo_url || "",
                 exhibitions: normalizeEntries(data.exhibitions),
-                awards: normalizeEntries(data.awards)
+                awards: normalizeEntries(data.awards),
             })
         }
         setLoading(false)
@@ -211,48 +213,44 @@ export default function BioEditor() {
     const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
         if (!file) return
-
         setUploading(true)
-        const fileExt = file.name.split('.').pop()
+        const fileExt = file.name.split(".").pop()
         const fileName = `profile.${fileExt}`
-
         const uploadForm = new FormData()
-        uploadForm.append('file', file)
-        uploadForm.append('bucket', 'profile')
-        uploadForm.append('path', fileName)
-
+        uploadForm.append("file", file)
+        uploadForm.append("bucket", "profile")
+        uploadForm.append("path", fileName)
         try {
-            const res = await fetch('/api/upload', { method: 'POST', body: uploadForm })
+            const res = await fetch("/api/upload", { method: "POST", body: uploadForm })
             const json = await res.json()
             if (!res.ok) throw new Error(json.error)
-            setFormData(prev => ({ ...prev, photo_url: json.publicUrl }))
+            setFormData((prev) => ({ ...prev, photo_url: json.publicUrl }))
             toast.success("Photo uploaded successfully")
         } catch (err: any) {
             toast.error("Upload failed: " + err.message)
-            console.error(err)
         } finally {
             setUploading(false)
         }
     }
 
+    // Strip generated `id` before saving so the DB schema stays unchanged
     const handleSave = async () => {
         setSaving(true)
-        const { data: existing } = await supabase.from('bio').select('id').maybeSingle()
-
+        const strip = (arr: any[]) => arr.map(({ id, ...rest }) => rest)
+        const payload = {
+            ...formData,
+            exhibitions: strip(formData.exhibitions),
+            awards: strip(formData.awards),
+        }
+        const { data: existing } = await supabase.from("bio").select("id").maybeSingle()
         let error
         if (existing) {
-            const { error: updateError } = await supabase
-                .from('bio')
-                .update(formData)
-                .eq('id', existing.id)
-            error = updateError
+            const { error: e } = await supabase.from("bio").update(payload).eq("id", existing.id)
+            error = e
         } else {
-            const { error: insertError } = await supabase
-                .from('bio')
-                .insert([formData])
-            error = insertError
+            const { error: e } = await supabase.from("bio").insert([payload])
+            error = e
         }
-
         if (error) {
             toast.error("Failed to save changes")
             console.error(error)
@@ -262,45 +260,43 @@ export default function BioEditor() {
         setSaving(false)
     }
 
-    const addExhibition = () => {
-        setFormData(prev => ({
+    // ── Exhibitions helpers ──
+    const addExhibition = () =>
+        setFormData((prev) => ({
             ...prev,
-            exhibitions: [...prev.exhibitions, { title: "", year: "", location: "" }]
+            exhibitions: [...prev.exhibitions, { id: uid(), title: "", year: "", location: "" }],
         }))
-    }
 
     const updateExhibition = (index: number, field: keyof ExhibitionEntry, value: string) => {
         const updated = [...formData.exhibitions]
         updated[index] = { ...updated[index], [field]: value }
-        setFormData(prev => ({ ...prev, exhibitions: updated }))
+        setFormData((prev) => ({ ...prev, exhibitions: updated }))
     }
 
-    const removeExhibition = (index: number) => {
-        setFormData(prev => ({
+    const removeExhibition = (index: number) =>
+        setFormData((prev) => ({
             ...prev,
-            exhibitions: prev.exhibitions.filter((_, i) => i !== index)
+            exhibitions: prev.exhibitions.filter((_, i) => i !== index),
         }))
-    }
 
-    const addAward = () => {
-        setFormData(prev => ({
+    // ── Awards helpers ──
+    const addAward = () =>
+        setFormData((prev) => ({
             ...prev,
-            awards: [...prev.awards, { title: "", year: "", location: "" }]
+            awards: [...prev.awards, { id: uid(), title: "", year: "", location: "" }],
         }))
-    }
 
     const updateAward = (index: number, field: keyof AwardEntry, value: string) => {
         const updated = [...formData.awards]
         updated[index] = { ...updated[index], [field]: value }
-        setFormData(prev => ({ ...prev, awards: updated }))
+        setFormData((prev) => ({ ...prev, awards: updated }))
     }
 
-    const removeAward = (index: number) => {
-        setFormData(prev => ({
+    const removeAward = (index: number) =>
+        setFormData((prev) => ({
             ...prev,
-            awards: prev.awards.filter((_, i) => i !== index)
+            awards: prev.awards.filter((_, i) => i !== index),
         }))
-    }
 
     if (loading) {
         return (
@@ -314,8 +310,12 @@ export default function BioEditor() {
         <div className="space-y-12 pb-20">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-4xl font-light text-stone-900 mb-2">Bio & <span className="font-medium">Profile</span></h1>
-                    <p className="text-stone-400 text-sm font-light uppercase tracking-widest">Manage your personal details</p>
+                    <h1 className="text-4xl font-light text-stone-900 mb-2">
+                        Bio & <span className="font-medium">Profile</span>
+                    </h1>
+                    <p className="text-stone-400 text-sm font-light uppercase tracking-widest">
+                        Manage your personal details
+                    </p>
                 </div>
                 <button
                     onClick={handleSave}
@@ -328,9 +328,9 @@ export default function BioEditor() {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-                {/* Left Column: Photo & Statement */}
+                {/* Left: Photo & Statement */}
                 <div className="lg:col-span-2 space-y-12">
-                    {/* Photo Upload */}
+                    {/* Photo */}
                     <div className="p-8 rounded-3xl bg-white/60 backdrop-blur-md border border-black/[0.06] shadow-sm space-y-4">
                         <label className="text-stone-600 text-xs font-light tracking-wide uppercase">Profile Photo</label>
                         <div className="flex flex-col md:flex-row gap-8 items-start">
@@ -345,11 +345,11 @@ export default function BioEditor() {
                                 <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                     <Upload className="w-6 h-6 text-white" />
                                 </div>
-                                <input 
-                                    type="file" 
-                                    accept="image/*" 
+                                <input
+                                    type="file"
+                                    accept="image/*"
                                     onChange={handlePhotoUpload}
-                                    className="absolute inset-0 opacity-0 cursor-pointer" 
+                                    className="absolute inset-0 opacity-0 cursor-pointer"
                                     disabled={uploading}
                                 />
                             </div>
@@ -359,14 +359,13 @@ export default function BioEditor() {
                                 </p>
                                 {uploading && (
                                     <div className="flex items-center gap-2 text-stone-500 text-xs">
-                                        <Loader2 className="w-3 h-3 animate-spin" />
-                                        Uploading photo...
+                                        <Loader2 className="w-3 h-3 animate-spin" /> Uploading photo...
                                     </div>
                                 )}
                                 {formData.photo_url && (
                                     <button
                                         type="button"
-                                        onClick={() => setFormData(prev => ({ ...prev, photo_url: "" }))}
+                                        onClick={() => setFormData((prev) => ({ ...prev, photo_url: "" }))}
                                         className="text-red-400/60 hover:text-red-400 text-xs transition-colors"
                                     >
                                         Remove photo
@@ -376,12 +375,12 @@ export default function BioEditor() {
                         </div>
                     </div>
 
-                    {/* Artist Statement */}
+                    {/* Statement */}
                     <div className="p-8 rounded-3xl bg-white/60 backdrop-blur-md border border-black/[0.06] shadow-sm space-y-4">
                         <label className="text-stone-600 text-xs font-light tracking-wide uppercase">Artist Statement</label>
                         <textarea
                             value={formData.statement}
-                            onChange={(e) => setFormData(prev => ({ ...prev, statement: e.target.value }))}
+                            onChange={(e) => setFormData((prev) => ({ ...prev, statement: e.target.value }))}
                             rows={12}
                             className="w-full px-6 py-5 rounded-2xl bg-white/60 border border-black/[0.08] text-stone-900 text-base font-light leading-relaxed placeholder:text-stone-400 focus:outline-none focus:border-stone-400 focus:bg-white transition-all resize-none"
                             placeholder="Tell your story..."
@@ -389,13 +388,16 @@ export default function BioEditor() {
                     </div>
                 </div>
 
-                {/* Right Column: Exhibitions & Awards */}
+                {/* Right: Exhibitions & Awards */}
                 <div className="space-y-12">
                     {/* Exhibitions */}
                     <div className="p-8 rounded-3xl bg-white/60 backdrop-blur-md border border-black/[0.06] shadow-sm space-y-6">
                         <div className="flex items-center justify-between">
                             <label className="text-stone-600 text-xs font-light tracking-wide uppercase">Exhibitions</label>
-                            <button onClick={addExhibition} className="p-1.5 rounded-full bg-white/60 border border-black/[0.08] text-stone-500 hover:text-stone-900 transition-all">
+                            <button
+                                onClick={addExhibition}
+                                className="p-1.5 rounded-full bg-white/60 border border-black/[0.08] text-stone-500 hover:text-stone-900 transition-all"
+                            >
                                 <Plus className="w-3.5 h-3.5" />
                             </button>
                         </div>
@@ -405,12 +407,12 @@ export default function BioEditor() {
                         <Reorder.Group
                             axis="y"
                             values={formData.exhibitions}
-                            onReorder={(newOrder) => setFormData(prev => ({ ...prev, exhibitions: newOrder }))}
+                            onReorder={(newOrder) => setFormData((prev) => ({ ...prev, exhibitions: newOrder }))}
                             className="space-y-3"
                         >
                             {formData.exhibitions.map((item, index) => (
                                 <ExhibitionCard
-                                    key={item.title + "-" + index}
+                                    key={item.id}
                                     item={item}
                                     index={index}
                                     onUpdate={updateExhibition}
@@ -424,7 +426,10 @@ export default function BioEditor() {
                     <div className="p-8 rounded-3xl bg-white/60 backdrop-blur-md border border-black/[0.06] shadow-sm space-y-6">
                         <div className="flex items-center justify-between">
                             <label className="text-stone-600 text-xs font-light tracking-wide uppercase">Awards</label>
-                            <button onClick={addAward} className="p-1.5 rounded-full bg-white/60 border border-black/[0.08] text-stone-500 hover:text-stone-900 transition-all">
+                            <button
+                                onClick={addAward}
+                                className="p-1.5 rounded-full bg-white/60 border border-black/[0.08] text-stone-500 hover:text-stone-900 transition-all"
+                            >
                                 <Plus className="w-3.5 h-3.5" />
                             </button>
                         </div>
@@ -434,12 +439,12 @@ export default function BioEditor() {
                         <Reorder.Group
                             axis="y"
                             values={formData.awards}
-                            onReorder={(newOrder) => setFormData(prev => ({ ...prev, awards: newOrder }))}
+                            onReorder={(newOrder) => setFormData((prev) => ({ ...prev, awards: newOrder }))}
                             className="space-y-3"
                         >
                             {formData.awards.map((item, index) => (
                                 <AwardCard
-                                    key={item.title + "-" + index}
+                                    key={item.id}
                                     item={item}
                                     index={index}
                                     onUpdate={updateAward}
