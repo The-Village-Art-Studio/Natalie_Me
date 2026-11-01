@@ -7,6 +7,7 @@ import "./globals.css"
 import BackToTop from "@/components/back-to-top"
 import AtmosphereBackground from "@/components/atmosphere-background"
 import { Toaster } from "@/components/ui/sonner"
+import { Analytics } from "@vercel/analytics/next"
 
 const josefin = Josefin_Sans({
   subsets: ["latin"],
@@ -64,6 +65,7 @@ html {
         {children}
         <BackToTop />
         <Toaster />
+        <Analytics />
       </body>
     </html>
   )
